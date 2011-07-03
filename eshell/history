@@ -1,0 +1,10 @@
+echo $PATH
+coffee
+node
+ls
+ll
+ls
+ll
+ls
+ls
+ll
