@@ -11,7 +11,7 @@
 	path = vendor/minimap
 	url = git://randomsample.de/minimap.git
 [submodule "vendor/centered-cursor"]
-	path = vendor/centered-cursor
+	path = vendor/centered-cursor-mode
 	url = https://github.com/emacsmirror/centered-cursor-mode.git
 [submodule "vendor/dired+"]
 	path = vendor/dired+
