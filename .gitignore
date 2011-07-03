@@ -1,13 +1,7 @@
 .DS_Store
 *~
-.saveplace
 .emacs-opened-files
 .savehist
 .saveplace
 tramp
-vendor/nav/.hg/
-/.redcar/lucene/_0.cfs
-/.redcar/lucene/segments.gen
-/.redcar/lucene/segments_2
-/.redcar/lucene_last_updated
-/.redcar/tags
+eshell
