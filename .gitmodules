@@ -37,3 +37,9 @@
 [submodule "vendor/centered-cursor-mode"]
 	path = vendor/centered-cursor-mode
 	url = https://github.com/emacsmirror/centered-cursor-mode.git
+[submodule "vendor/peepopen"]
+	path = vendor/peepopen
+	url = https://github.com/topfunky/PeepOpen-EditorSupport.git
+[submodule "vendor/rvm"]
+	path = vendor/rvm
+	url = https://github.com/senny/rvm.el.git

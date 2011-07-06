@@ -236,7 +236,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Shell Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; sane path
-(setq path "/Users/mranallo/Code/bin:/opt/local/sbin:/opt/local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin")
+(setq path "/Users/mranallo/Code/bin:/opt/local/sbin:/opt/local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin:/Users/mranallo/.rvm/bin")
 (setenv "PATH" path)
 
 ; more bash-like autocomplete
@@ -272,7 +272,6 @@
   ;; color-theme-twi... 0.1          installed  Twilight Colour Theme for Emacs.
   ;; magit              1.0.0        installed  Control Git from Emacs.
   ;; magit-simple-keys  1.0.0        installed  simple keybindings for Magit
-  ;; rvm                1.1          installed  Emacs integration for rvm
   ;; smart-tab          0.3          installed  Intelligent tab completion and indentation.
   ;; smex               1.1.1        installed  M-x interface with Ido-style fuzzy matching.
   ;; undo-tree          0.1.6        installed  Treat undo history as a tree
@@ -288,10 +287,14 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 ;; RVM
-;; (rvm-use-default) ;; use rvm’s default ruby for the current Emacs session
+(vendor 'rvm)
+(rvm-use-default) ;; use rvm’s default ruby for the current Emacs session
 
 ;; textmate mode
 (vendor 'textmate)
+
+;; Peepopen extension for use with Peepopen https://peepcode.com/products/peepopen
+(vendor 'peepopen)
 (textmate-mode t)
 
 ;; Rinari for rails
@@ -326,7 +329,12 @@
 (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
 
 ;; RHTML mode
-(add-to-list 'load-path "~/.emacs.d/vendor/rhtml")
+;; (add-to-list 'load-path "~/.emacs.d/vendor/rhtml-mode")
+;; (require 'rhtml-mode)
+(vendor 'rhtml-mode)
+(add-hook 'rhtml-mode-hook
+     	  (lambda () (rinari-launch)))
+(add-to-list 'auto-mode-alist '("\\.rhtml$" . rhtml-mode))
 
 ;; Ack
 (vendor 'full-ack)
