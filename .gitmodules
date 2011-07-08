@@ -25,9 +25,6 @@
 [submodule "vendor/coffee-mode"]
 	path = vendor/coffee-mode
 	url = https://github.com/defunkt/coffee-mode.git
-[submodule "vendor/themes/color-theme-solarized"]
-	path = vendor/themes/color-theme-solarized
-	url = https://github.com/huyz/emacs-color-theme-solarized.git
 [submodule "vendor/ruby-end"]
 	path = vendor/ruby-end
 	url = https://github.com/rejeep/ruby-end.git
