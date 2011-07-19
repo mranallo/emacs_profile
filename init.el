@@ -147,12 +147,6 @@
 ; no bell
 (setq ring-bell-function 'ignore)
 
-; theme
-;(color-theme-twilight)
-;(color-theme-solarized-light)
-;(color-theme-solarized-dark)
-(load-theme 'tango)
-
 ;;;;;;;;;;;;;;;;;;;; Keys ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq default-input-method "MacOSX")
@@ -382,7 +376,32 @@
           '(lambda() (coffee-custom)))
 
 ;; Solarized
-(add-to-list 'load-path "~/.emacs.d/vendor/themes/color-theme-solarized")
+(add-to-list 'load-path "~/.emacs.d/vendor/color-theme-solarized")
+(load-file "~/.emacs.d/vendor/color-theme-solarized/solarized-definitions.el")
+
+
 
 ;; Ruby End
 (vendor 'ruby-end)
+
+;; YAML hooks
+(autoload 'yaml-mode "yaml-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(custom-safe-themes (quote ("0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(custom-theme-load-path (quote (custom-theme-directory t "~/Code/emacs_profile/vendor/color-theme-solarized/"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(load-theme 'solarized-light)
