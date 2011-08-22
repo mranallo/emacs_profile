@@ -124,7 +124,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "Menlo-14")
+(set-frame-font "Menlo-12")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
@@ -379,7 +379,9 @@
 (add-to-list 'load-path "~/.emacs.d/vendor/color-theme-solarized")
 (load-file "~/.emacs.d/vendor/color-theme-solarized/solarized-definitions.el")
 
-
+;; Sass mode
+(vendor 'sass-mode)
+(add-to-list 'auto-mode-alist '("\\.scss\\'" . css-mode))
 
 ;; Ruby End
 (vendor 'ruby-end)
