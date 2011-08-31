@@ -124,7 +124,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "Menlo-12")
+(set-frame-font "Manaco-12")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
@@ -397,8 +397,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(custom-safe-themes (quote ("0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
- '(custom-theme-load-path (quote (custom-theme-directory t "~/Code/emacs_profile/vendor/color-theme-solarized/"))))
+ '(background-color "#fcf4dc")
+ '(background-mode light)
+ '(cursor-color "#52676f")
+ '(custom-enabled-themes (quote (zenburn)))
+ '(custom-safe-themes (quote ("86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(custom-theme-load-path (quote (custom-theme-directory t "~/Code/emacs_profile/vendor/themes/")))
+ '(foreground-color "#52676f"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -406,4 +411,5 @@
  ;; If there is more than one, they won't work right.
  )
 
-(load-theme 'solarized-light)
+;; (load-theme 'solarized-light)
+(load-theme 'zenburn)
