@@ -124,7 +124,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "Manaco-12")
+(set-frame-font "Menlo-12")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
@@ -385,6 +385,11 @@
 
 ;; Ruby End
 (vendor 'ruby-end)
+
+;; Deft (for notes)
+(vendor 'deft)
+(setq deft-extension "txt")
+(setq deft-directory "~/Dropbox/notes")
 
 ;; YAML hooks
 (autoload 'yaml-mode "yaml-mode" nil t)
