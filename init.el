@@ -124,7 +124,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "Menlo-12")
+(set-frame-font "Monaco-12")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
