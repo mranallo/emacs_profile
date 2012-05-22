@@ -23,7 +23,7 @@
 
 (require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("Tromey" . "http://tromey.com/elpa/"))
+;; (add-to-list 'package-archives '("Tromey" . "http://tromey.com/elpa/"))
 (package-initialize)
 
 ;;;;;;;;;;;;;;;;;;;; Buffer Tweaks ;;;;;;;;;;;;;;;;;;;;;;;
@@ -124,7 +124,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "Monaco-12")
+(set-frame-font "PT Mono-14")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
@@ -406,7 +406,7 @@
  '(background-mode light)
  '(cursor-color "#52676f")
  '(custom-enabled-themes (quote (zenburn)))
- '(custom-safe-themes (quote ("86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(custom-safe-themes (quote ("5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
  '(custom-theme-load-path (quote (custom-theme-directory t "~/Code/emacs_profile/vendor/themes/")))
  '(foreground-color "#52676f"))
 (custom-set-faces
