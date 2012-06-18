@@ -171,7 +171,7 @@
 (defun esk-suck-it (suckee)
   "Insert a comment of appropriate length about what can suck it."
   (interactive "MWhat can suck it? ")
-  (let ((prefix (concat ";; " suckee " can s"))
+  (let ((prefix (concat "# " suckee " can s"))
         (postfix "ck it!")
         (col (current-column)))
     (insert prefix)
