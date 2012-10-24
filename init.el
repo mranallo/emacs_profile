@@ -391,6 +391,11 @@
 (setq deft-extension "txt")
 (setq deft-directory "~/Dropbox/notes")
 
+;; Powerline https://github.com/jonathanchu/emacs-powerline
+(vendor 'powerline)
+(setq powerline-arrow-shape 'arrow)
+
+
 ;; YAML hooks
 (autoload 'yaml-mode "yaml-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))

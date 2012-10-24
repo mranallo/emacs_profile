@@ -46,3 +46,6 @@
 [submodule "vendor/deft"]
 	path = vendor/deft
 	url = git://jblevins.org/git/deft.git
+[submodule "vendor/powerline"]
+	path = vendor/powerline
+	url = git://github.com/jonathanchu/emacs-powerline.git
