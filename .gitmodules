@@ -19,9 +19,6 @@
 [submodule "vendor/rhtml-mode"]
 	path = vendor/rhtml-mode
 	url = https://github.com/eschulte/rhtml.git
-[submodule "vendor/full-ack"]
-	path = vendor/full-ack
-	url = https://github.com/nschum/full-ack.git
 [submodule "vendor/coffee-mode"]
 	path = vendor/coffee-mode
 	url = https://github.com/defunkt/coffee-mode.git
