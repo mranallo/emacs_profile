@@ -261,17 +261,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+  ;; ack-and-a-half     1.1.1        installed  Yet another front-end for ack
   ;; browse-kill-ring   1.3.1        installed  interactively insert items from kill-ring -*- coding: utf-8 -*-
-  ;; color-theme        6.6.1        installed  install color themes
-  ;; color-theme-twi... 0.1          installed  Twilight Colour Theme for Emacs.
-  ;; magit              1.0.0        installed  Control Git from Emacs.
-  ;; magit-simple-keys  1.0.0        installed  simple keybindings for Magit
+  ;; color-theme-san... 0.9          installed  A version of Chris Kempson's various Tomorrow themes
+  ;; ctags-update       0.1.2        installed  auto update TAGS in parent directory using exuberant-ctags -*- coding:utf-8 -*-
+  ;; eieio              1.4          installed  Enhanced Implememntation of Emacs Interpreted Objects
+  ;; flymake-coffee     0.6          installed  Flymake support for coffee script
+  ;; flymake-haml       0.6          installed  Flymake handler for haml files
+  ;; flymake-ruby       0.5          installed  A flymake handler for ruby-mode files
+  ;; gh                 0.5.3        installed  A GitHub library for Emacs
+  ;; gist               1.0.1        installed  Emacs integration for gist.github.com
+  ;; hackernews         0.1          installed  Access the hackernews aggregator from Emacs
+  ;; httpcode           0.1          installed  explains the meaning of an HTTP status code
+  ;; logito             0.1          installed  logging library for Emacs
+  ;; magit              1.2.0        installed  Control Git from Emacs.
+  ;; monokai-theme      0.0.7        installed  REQUIRES EMACS 24: Monokai Color Theme for Emacs.
+  ;; pastels-on-dark... 0.3          installed  Pastels on Dark theme for Emacs 24
+  ;; pcache             0.2.3        installed  persistent caching for Emacs
+  ;; pivotal-tracker    1.1.0        installed  Interact with Pivotal Tracker through its API
+  ;; ruby-mode          1.1          installed  ruby-mode package
+  ;; ruby-tools         0.1.0        installed  Collection of handy functions for ruby-mode
+  ;; rvm                1.2          installed  Emacs integration for rvm
   ;; smart-tab          0.3          installed  Intelligent tab completion and indentation.
   ;; smex               1.1.1        installed  M-x interface with Ido-style fuzzy matching.
-  ;; undo-tree          0.1.6        installed  Treat undo history as a tree
+  ;; tango-2-theme      1.0.0        installed  Tango 2 color theme for GNU Emacs 24
+  ;; twilight-theme     1.0.0        installed  Twilight theme for GNU Emacs 24 (deftheme)
+  ;; ujelly-theme       1.0.5        installed  Ujelly theme for GNU Emacs 24 (deftheme)
+  ;; undo-tree          0.5.5        installed  Treat undo history as a tree
+  ;; unfill             0.1          installed  The inverse of fill-paragraph and fill-region
   ;; yaml-mode          0.0.7        installed  Major mode for editing YAML files
   ;; yas-jit            0.5          installed  Loads Yasnippets on demand (makes start up faster)
   ;; yasnippet-bundle   0.6.1        installed  Yet another snippet extension (Auto compiled bundle)
+  ;; zen-and-art-theme  1.0.0        installed  zen and art color theme for GNU Emacs 24
 
 ;; Smex
 (smex-initialize)
@@ -331,11 +352,12 @@
 (add-to-list 'auto-mode-alist '("\\.rhtml$" . rhtml-mode))
 
 ;; Ack
-(vendor 'full-ack)
-(autoload 'ack-same "full-ack" nil t)
-(autoload 'ack "full-ack" nil t)
-(autoload 'ack-find-same-file "full-ack" nil t)
-(autoload 'ack-find-file "full-ack" nil t)
+(require 'ack-and-a-half)
+;; Create shorter aliases
+(defalias 'ack 'ack-and-a-half)
+(defalias 'ack-same 'ack-and-a-half-same)
+(defalias 'ack-find-file 'ack-and-a-half-find-file)
+(defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
 
 ;; Ruby
 (autoload 'ruby-mode "ruby-mode" "Mode for editing ruby source files" t)
@@ -394,7 +416,8 @@
 ;; Powerline https://github.com/jonathanchu/emacs-powerline
 (vendor 'powerline)
 (setq powerline-arrow-shape 'arrow)
-
+(setq powerline-color1 "grey22")
+(setq powerline-color2 "grey40")
 
 ;; YAML hooks
 (autoload 'yaml-mode "yaml-mode" nil t)
