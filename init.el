@@ -124,7 +124,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "PT Mono-14")
+(set-frame-font "PT Mono-12")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
