@@ -230,10 +230,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Shell Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; sane path
-(setq path "/Users/mranallo/Code/bin:/opt/local/sbin:/opt/local/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin:/Users/mranallo/.rvm/bin")
+(setq path "/Users/mranallo/Code/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin")
 (setenv "PATH" path)
 
-; more bash-like autocomplete
+;; more bash-like autocomplete
 ;; (setq eshell-cmpl-cycle-completions nil)
 
 ; automatically save history
@@ -281,7 +281,6 @@
   ;; pivotal-tracker    1.1.0        installed  Interact with Pivotal Tracker through its API
   ;; ruby-mode          1.1          installed  ruby-mode package
   ;; ruby-tools         0.1.0        installed  Collection of handy functions for ruby-mode
-  ;; rvm                1.2          installed  Emacs integration for rvm
   ;; smart-tab          0.3          installed  Intelligent tab completion and indentation.
   ;; smex               1.1.1        installed  M-x interface with Ido-style fuzzy matching.
   ;; tango-2-theme      1.0.0        installed  Tango 2 color theme for GNU Emacs 24
@@ -301,10 +300,6 @@
 (global-set-key (kbd "C-x C-m") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
-;; RVM
-(vendor 'rvm)
-(rvm-use-default) ;; use rvm’s default ruby for the current Emacs session
-
 ;; textmate mode
 (vendor 'textmate)
 
@@ -323,7 +318,7 @@
 (vendor 'minimap)
 
 ;; Undo Tree
-(require 'undo-tree)
+2(require 'undo-tree)
 (global-undo-tree-mode)
 
 ;; Centered Cursor mode
@@ -368,6 +363,10 @@
 (setq auto-mode-alist (cons '("Gemfile" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rake" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.gemspec" . ruby-mode) auto-mode-alist))
+
+;; Zossima
+(vendor 'zossima)
+(add-hook 'inf-ruby-mode-hook 'zossima-mode)
 
 ;; YA Snippets
 (yas/load-directory "~/.emacs.d/vendor/snippets")
