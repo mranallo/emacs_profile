@@ -124,7 +124,7 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "PT Mono-12")
+(set-frame-font "PT Mono-14")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
@@ -230,7 +230,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Shell Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; sane path
-(setq path "/Users/mranallo/Code/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin")
+(setq path "$RUBY_ROOT/bin:/Users/mranallo/Code/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin")
 (setenv "PATH" path)
 
 ;; more bash-like autocomplete
@@ -300,16 +300,9 @@
 (global-set-key (kbd "C-x C-m") 'smex)
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
-;; textmate mode
-(vendor 'textmate)
-
-;; Peepopen extension for use with Peepopen https://peepcode.com/products/peepopen
-(vendor 'peepopen)
-(textmate-mode t)
-
 ;; Rinari for rails
 (vendor 'rinari)
-(setq rinari-tags-file-name "TAGS")
+(setq rinari-tags-file-name "tags")
 
 ;; Haml because they make me
 (vendor 'haml-mode)
@@ -318,8 +311,12 @@
 (vendor 'minimap)
 
 ;; Undo Tree
-2(require 'undo-tree)
+(require 'undo-tree)
 (global-undo-tree-mode)
+
+;; Keyboard Shortcuts
+(vendor 'textmate)
+(textmate-mode)
 
 ;; Centered Cursor mode
 (vendor 'centered-cursor-mode)
@@ -416,12 +413,20 @@
 (vendor 'powerline)
 (setq powerline-arrow-shape 'arrow)
 (setq powerline-color1 "grey22")
-(setq powerline-color2 "grey40")
+(setq powerline-color2 "honeydew4")
+
+;; Anything Modes
+(require 'anything-complete)
+(require 'anything-exuberant-ctags)
+(global-set-key (kbd "s-T") 'anything-exuberant-ctags-select)
+(require 'anything-git-goto)
+(global-set-key (kbd "s-t") 'anything-git-goto)
 
 ;; YAML hooks
 (autoload 'yaml-mode "yaml-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -432,8 +437,8 @@
  '(background-color "#fcf4dc")
  '(background-mode light)
  '(cursor-color "#52676f")
- '(custom-enabled-themes (quote (tsdh-light)))
- '(custom-safe-themes (quote ("9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(custom-enabled-themes (quote (twilight-bright)))
+ '(custom-safe-themes (quote ("fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
  '(custom-theme-load-path (quote (custom-theme-directory t "~/Code/emacs_profile/vendor/themes/")))
  '(foreground-color "#52676f"))
 (custom-set-faces
@@ -441,7 +446,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t (:background "grey75" :foreground "black" :box nil :family "Menlo")))))
 
 ;; (load-theme 'solarized-light)
 ;; (load-theme 'zenburn)
