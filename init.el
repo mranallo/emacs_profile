@@ -288,7 +288,6 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; ack-and-a-half     20130103.... installed  Yet another front-end for ack [source: github]
 ;; anti-zenburn-theme 20130110.... installed  Low-contrast Zenburn-inverted theme [source: github]
 ;; anything           1.287        installed  open anything / QuickSilver-like candidate-selection framework
