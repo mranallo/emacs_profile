@@ -24,6 +24,7 @@
 (require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 ;; (add-to-list 'package-archives '("Tromey" . "http://tromey.com/elpa/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
 ;;;;;;;;;;;;;;;;;;;; Buffer Tweaks ;;;;;;;;;;;;;;;;;;;;;;;
@@ -124,13 +125,14 @@
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
-(set-frame-font "PT Mono-14")
+(set-frame-font "PT Mono-12")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
 
 ; no scrollbar
-(scroll-bar-mode -1)
+;; (scroll-bar-mode -1)
+(scroll-bar-mode)
 
 ; no toolbar
 (tool-bar-mode -1)
@@ -153,6 +155,9 @@
 
 ; option/alt is meta key
 (setq mac-command-key-is-meta nil)
+
+; Enable hyper key!
+(setq ns-function-modifier 'hyper)
 
 ; Make yes-or-no questions answerable with 'y' or 'n'
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -194,6 +199,7 @@
 
 ; magit
 (global-set-key (kbd "C-c i") 'magit-status)
+(global-set-key (kbd "<f5>") 'magit-status)
 
 ;; This below is from my previous bindigs file
 
@@ -226,12 +232,22 @@
 (global-set-key (kbd "s-z") 'undo-tree-undo)
 (global-set-key (kbd "s-Z") 'undo-tree-redo)
 
+;; Move line up and down
+(global-set-key (kbd "<C-S-down>") 'move-line-down)
+(global-set-key (kbd "<C-S-up>") 'move-line-up)
+
+;; Join multiple lines
+(global-set-key (kbd "M-j")
+            (lambda ()
+                  (interactive)
+                  (join-line -1)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Shell Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; sane path
-(setq path "$RUBY_ROOT/bin:/Users/mranallo/Code/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin")
-(setenv "PATH" path)
+;; (setq path "/usr/local/ruby-1.9.3-p194/bin:/Users/mranallo/Code/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/X11/bin:/Users/mranallo/Code/nodejs/bin")
+;; (setenv "PATH" path)
 
 ;; more bash-like autocomplete
 ;; (setq eshell-cmpl-cycle-completions nil)
@@ -249,6 +265,18 @@
 ;; (setq eshell-scroll-to-bottom-on-output t)
 ;; (setq eshell-scroll-show-maximum-output t)
 
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell (replace-regexp-in-string
+                          "[ \t\n]*$"
+                          ""
+                          (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq eshell-path-env path-from-shell) ; for eshell users
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(if window-system (set-exec-path-from-shell-PATH))
+(setenv "GEM_HOME" "/Users/mranallo/.gem/ruby/1.9.3")
+
 ; colorful shell
 (require 'ansi-color)
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
@@ -261,37 +289,90 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;; ack-and-a-half     1.1.1        installed  Yet another front-end for ack
-  ;; browse-kill-ring   1.3.1        installed  interactively insert items from kill-ring -*- coding: utf-8 -*-
-  ;; color-theme-san... 0.9          installed  A version of Chris Kempson's various Tomorrow themes
-  ;; ctags-update       0.1.2        installed  auto update TAGS in parent directory using exuberant-ctags -*- coding:utf-8 -*-
-  ;; eieio              1.4          installed  Enhanced Implememntation of Emacs Interpreted Objects
-  ;; flymake-coffee     0.6          installed  Flymake support for coffee script
-  ;; flymake-haml       0.6          installed  Flymake handler for haml files
-  ;; flymake-ruby       0.5          installed  A flymake handler for ruby-mode files
-  ;; gh                 0.5.3        installed  A GitHub library for Emacs
-  ;; gist               1.0.1        installed  Emacs integration for gist.github.com
-  ;; hackernews         0.1          installed  Access the hackernews aggregator from Emacs
-  ;; httpcode           0.1          installed  explains the meaning of an HTTP status code
-  ;; logito             0.1          installed  logging library for Emacs
-  ;; magit              1.2.0        installed  Control Git from Emacs.
-  ;; monokai-theme      0.0.7        installed  REQUIRES EMACS 24: Monokai Color Theme for Emacs.
-  ;; pastels-on-dark... 0.3          installed  Pastels on Dark theme for Emacs 24
-  ;; pcache             0.2.3        installed  persistent caching for Emacs
-  ;; pivotal-tracker    1.1.0        installed  Interact with Pivotal Tracker through its API
-  ;; ruby-mode          1.1          installed  ruby-mode package
-  ;; ruby-tools         0.1.0        installed  Collection of handy functions for ruby-mode
-  ;; smart-tab          0.3          installed  Intelligent tab completion and indentation.
-  ;; smex               1.1.1        installed  M-x interface with Ido-style fuzzy matching.
-  ;; tango-2-theme      1.0.0        installed  Tango 2 color theme for GNU Emacs 24
-  ;; twilight-theme     1.0.0        installed  Twilight theme for GNU Emacs 24 (deftheme)
-  ;; ujelly-theme       1.0.5        installed  Ujelly theme for GNU Emacs 24 (deftheme)
-  ;; undo-tree          0.5.5        installed  Treat undo history as a tree
-  ;; unfill             0.1          installed  The inverse of fill-paragraph and fill-region
-  ;; yaml-mode          0.0.7        installed  Major mode for editing YAML files
-  ;; yas-jit            0.5          installed  Loads Yasnippets on demand (makes start up faster)
-  ;; yasnippet-bundle   0.6.1        installed  Yet another snippet extension (Auto compiled bundle)
-  ;; zen-and-art-theme  1.0.0        installed  zen and art color theme for GNU Emacs 24
+;; ack-and-a-half     20130103.... installed  Yet another front-end for ack [source: github]
+;; anti-zenburn-theme 20130110.... installed  Low-contrast Zenburn-inverted theme [source: github]
+;; anything           1.287        installed  open anything / QuickSilver-like candidate-selection framework
+;; anything-complete  1.86         installed  completion with anything
+;; anything-exuber... 0.1.2        installed  Exuberant ctags anything.el interface
+;; anything-git       1.1.1        installed  Show git files in anything
+;; anything-git-goto  0.1.0        installed  Quick listing of:
+;; anything-match-... 1.27         installed  Humane match plug-in for anything
+;; anything-obsolete  0.1          installed  obsolete functions of anything
+;; browse-kill-ring   20130122.... installed  interactively insert items from kill-ring [source: github]
+;; coffee-mode        20130125.... installed  Major mode to edit CoffeeScript files in Emacs [source: github]
+;; ctags-update       20121219.... installed  (auto) update TAGS in parent directory using exuberant-ctags [source: github]
+;; eieio              1.4          installed  Enhanced Implememntation of Emacs Interpreted Objects
+;; flymake-coffee     20121107.... installed  A flymake handler for coffee script [source: github]
+;; flymake-easy       20130106.... installed  Helpers for easily building flymake checkers [source: github]
+;; flymake-haml       20121104.... installed  A flymake handler for haml files [source: github]
+;; flymake-ruby       20121104.... installed  A flymake handler for ruby-mode files [source: github]
+;; flymake-sass       20121218.812 installed  Flymake handler for sass and scss files [source: github]
+;; gh                 20121231.208 installed  A GitHub library for Emacs [source: github]
+;; gist               20121231.212 installed  Emacs integration for gist.github.com [source: github]
+;; github-theme       0.0.3        installed  Github color theme for GNU Emacs 24
+;; gitignore-mode     20121012.... installed  Major mode for editing .gitignore files [source: github]
+;; hackernews         0.1          installed  Access the hackernews aggregator from Emacs
+;; haml-mode          20130121.837 installed  Major mode for editing Haml files [source: github]
+;; httpcode           0.1          installed  explains the meaning of an HTTP status code
+;; inf-ruby           20121215.... installed  Run a ruby process in a buffer [source: github]
+;; logito             20120225.... installed  logging library for Emacs [source: github]
+;; magit              20130123.... installed  Control Git from Emacs. [source: github]
+;; monokai-theme      0.0.8        installed  REQUIRES EMACS 24: Monokai Color Theme for Emacs.
+;; pcache             20120408.... installed  persistent caching for Emacs [source: github]
+;; pivotal-tracker    20120403.... installed  Interact with Pivotal Tracker through its API [source: github]
+;; rspec-mode         20121224.7   installed  Enhance ruby-mode for RSpec [source: github]
+;; ruby-mode          20121202.... installed  Major mode for editing Ruby files [source: svn]
+;; ruby-tools         20121008.... installed  Collection of handy functions for ruby-mode. [source: github]
+;; scala-mode         20121205.... installed  No description available. [source: github]
+;; smart-tab          20120409.940 installed  Intelligent tab completion and indentation. [source: github]
+;; smex               20120915.... installed  M-x interface with Ido-style fuzzy matching. [source: github]
+;; solarized-theme    20130108.651 installed  The Solarized color theme, ported to Emacs. [source: github]
+;; tango-2-theme      20120312.... installed  Tango 2 color theme for GNU Emacs 24 [source: github]
+;; twilight-anti-b... 20120713.... installed  A soothing Emacs 24 light-on-dark theme [source: github]
+;; twilight-bright... 20120630.... installed  A Emacs 24 faces port of the TextMate theme [source: github]
+;; twilight-theme     20120412.803 installed  Twilight theme for GNU Emacs 24 (deftheme) [source: github]
+;; undo-tree          20130119.926 installed  Treat undo history as a tree [source: git]
+;; unfill             20120529.... installed  The inverse of fill-paragraph and fill-region [source: github]
+;; yaml-mode          20120901.... installed  Major mode for editing YAML files [source: github]
+;; yas-jit            0.8.3        installed  Loads Yasnippets on demand (makes start up faster)
+;; yasnippet          20130112.... installed  Yet another snippet extension for Emacs. [source: github]
+;; zen-and-art-theme  20120622.937 installed  zen and art color theme for GNU Emacs 24 [source: github]
+;; zenburn-theme      20130128.... installed  A low contrast color theme for Emacs. [source: github]
+
+
+;; Magit settings
+;; full screen magit-status
+(require 'magit)
+(defadvice magit-status (around magit-fullscreen activate)
+  (window-configuration-to-register :magit-fullscreen)
+  ad-do-it
+  (delete-other-windows))
+
+(defun magit-quit-session ()
+  "Restores the previous window configuration and kills the magit buffer"
+  (interactive)
+  (kill-buffer)
+  (jump-to-register :magit-fullscreen))
+
+(define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+
+(defun magit-toggle-whitespace ()
+  (interactive)
+  (if (member "-w" magit-diff-options)
+      (magit-dont-ignore-whitespace)
+    (magit-ignore-whitespace)))
+
+(defun magit-ignore-whitespace ()
+  (interactive)
+  (add-to-list 'magit-diff-options "-w")
+  (magit-refresh))
+
+(defun magit-dont-ignore-whitespace ()
+  (interactive)
+  (setq magit-diff-options (remove "-w" magit-diff-options))
+  (magit-refresh))
+
+(define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
 
 ;; Smex
 (smex-initialize)
@@ -306,6 +387,7 @@
 
 ;; Haml because they make me
 (vendor 'haml-mode)
+(add-hook 'haml-mode-hook 'flymake-haml-load)
 
 ;; Minimap like SublimeText2
 (vendor 'minimap)
@@ -317,6 +399,9 @@
 ;; Keyboard Shortcuts
 (vendor 'textmate)
 (textmate-mode)
+
+;; Winner mode
+(winner-mode 1)
 
 ;; Centered Cursor mode
 (vendor 'centered-cursor-mode)
@@ -334,6 +419,9 @@
 ;; sr-speedbar
 (vendor 'sr-speedbar)
 (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
+
+;; rcodetools
+(vendor 'rcodetools)
 
 ;; RHTML mode
 ;; (add-to-list 'load-path "~/.emacs.d/vendor/rhtml-mode")
@@ -360,27 +448,23 @@
 (setq auto-mode-alist (cons '("Gemfile" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rake" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.gemspec" . ruby-mode) auto-mode-alist))
+(add-hook 'ruby-mode-hook 'flymake-ruby-load)
 
-;; Zossima
-(vendor 'zossima)
-(add-hook 'inf-ruby-mode-hook 'zossima-mode)
+;; smart-tab
+(require 'smart-tab)
+(add-to-list 'hippie-expand-try-functions-list
+             'yas/hippie-try-expand) ;put yasnippet in hippie-expansion list
+(global-smart-tab-mode 1)
+(setq smart-tab-using-hippie-expand nil)
 
 ;; YA Snippets
-(yas/load-directory "~/.emacs.d/vendor/snippets")
-(setq yas/prompt-functions '(yas/ido-prompt
+(require 'yasnippet)
+(yas-global-mode 1)
+(yas-load-directory "~/.emacs.d/vendor/snippets")
+(setq yas-prompt-functions '(yas/ido-prompt
                              yas/dropdown-prompt
                              yas/completing-prompt))
 
-(add-hook 'yas/minor-mode-hook
-          (lambda () (define-key yas/minor-mode-map
-                       (kbd "ESC") 'yas/expand))) ; was yas/expand
-(add-hook 'yas/major-mode-hook
-          (lambda () (define-key yas/minor-mode-map
-                       (kbd "ESC") 'yas/expand))) ; was yas/expand
-
-;; smart-tab
-(global-smart-tab-mode 1)
-(setq smart-tab-using-hippie-expand nil)
 
 ;; Coffeescript mode
 (vendor 'coffee-mode)
@@ -392,14 +476,13 @@
 
 (add-hook 'coffee-mode-hook
           '(lambda() (coffee-custom)))
-
-;; Solarized
-(add-to-list 'load-path "~/.emacs.d/vendor/color-theme-solarized")
-(load-file "~/.emacs.d/vendor/color-theme-solarized/solarized-definitions.el")
+(add-hook 'coffee-mode-hook 'flymake-coffee-load)
 
 ;; Sass mode
 (vendor 'sass-mode)
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . css-mode))
+(add-hook 'sass-mode-hook 'flymake-sass-load)
+
 
 ;; Ruby End
 (vendor 'ruby-end)
@@ -434,19 +517,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(ansi-term-color-vector [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"])
  '(background-color "#fcf4dc")
  '(background-mode light)
  '(cursor-color "#52676f")
  '(custom-enabled-themes (quote (twilight-bright)))
- '(custom-safe-themes (quote ("fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
- '(custom-theme-load-path (quote (custom-theme-directory t "~/Code/emacs_profile/vendor/themes/")))
+ '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "5cb805901c33a175f7505c8a8b83c43c39fb84fbae4e14cfb4d1a6c83dabbfba" "e9680c4d70f1d81afadd35647e818913da5ad34917f2c663d12e737cdecd2a77" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(fci-rule-character-color "#d9d9d9")
+ '(fci-rule-color "#d9d9d9")
  '(foreground-color "#52676f"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "grey75" :foreground "black" :box nil :family "Menlo")))))
-
-;; (load-theme 'solarized-light)
-;; (load-theme 'zenburn)
+ '(mode-line ((t (:background "grey75" :foreground "black" :box nil :family "PT Mono")))))
