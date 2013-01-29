@@ -200,6 +200,7 @@
 ; magit
 (global-set-key (kbd "C-c i") 'magit-status)
 (global-set-key (kbd "<f5>") 'magit-status)
+(global-set-key (kbd "<f6>") 'magit-blame-mode)
 
 ;; This below is from my previous bindigs file
 
