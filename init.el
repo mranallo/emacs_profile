@@ -382,15 +382,15 @@
 (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 ;; Rinari for rails
-(vendor 'rinari)
+(require 'rinari)
 (setq rinari-tags-file-name "tags")
 
 ;; Haml because they make me
-(vendor 'haml-mode)
+(require 'haml-mode)
 (add-hook 'haml-mode-hook 'flymake-haml-load)
 
 ;; Minimap like SublimeText2
-(vendor 'minimap)
+(require 'minimap)
 
 ;; Undo Tree
 (require 'undo-tree)
@@ -404,7 +404,7 @@
 (winner-mode 1)
 
 ;; Centered Cursor mode
-(vendor 'centered-cursor-mode)
+(require 'centered-cursor-mode)
 (global-centered-cursor-mode t)
 
 ;; kill ring browsing
@@ -412,24 +412,24 @@
 (browse-kill-ring-default-keybindings)
 
 ;; dired
-(vendor 'dired+)
+(require 'dired+)
 (setq dired-recursive-deletes 'top)
 (put 'dired-find-alternate-file 'disabled nil)
 
 ;; sr-speedbar
-(vendor 'sr-speedbar)
+(require 'sr-speedbar)
 (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
 
 ;; rcodetools
 (vendor 'rcodetools)
 
 ;; RHTML mode
-;; (add-to-list 'load-path "~/.emacs.d/vendor/rhtml-mode")
+;; (add-to-list 'load-path "~/.emacs.d/require/rhtml-mode")
 ;; (require 'rhtml-mode)
-(vendor 'rhtml-mode)
-(add-hook 'rhtml-mode-hook
-     	  (lambda () (rinari-launch)))
-(add-to-list 'auto-mode-alist '("\\.rhtml$" . rhtml-mode))
+;; (vendor 'rhtml-mode)
+;; (add-hook 'rhtml-mode-hook
+;;      	  (lambda () (rinari-launch)))
+;; (add-to-list 'auto-mode-alist '("\\.rhtml$" . rhtml-mode))
 
 ;; Ack
 (require 'ack-and-a-half)
@@ -449,6 +449,7 @@
 (setq auto-mode-alist (cons '("\\.rake" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.gemspec" . ruby-mode) auto-mode-alist))
 (add-hook 'ruby-mode-hook 'flymake-ruby-load)
+(add-hook 'ruby-electric-mode-hook 'ruby-interpolation-mode)
 
 ;; smart-tab
 (require 'smart-tab)
@@ -460,7 +461,7 @@
 ;; YA Snippets
 (require 'yasnippet)
 (yas-global-mode 1)
-(yas-load-directory "~/.emacs.d/vendor/snippets")
+;; (yas-load-directory "~/.emacs.d/vendor/snippets")
 (setq yas-prompt-functions '(yas/ido-prompt
                              yas/dropdown-prompt
                              yas/completing-prompt))
@@ -485,18 +486,19 @@
 
 
 ;; Ruby End
-(vendor 'ruby-end)
+(require 'ruby-end)
 
 ;; Deft (for notes)
-(vendor 'deft)
+(require 'deft)
 (setq deft-extension "txt")
 (setq deft-directory "~/Dropbox/notes")
 
 ;; Powerline https://github.com/jonathanchu/emacs-powerline
 (vendor 'powerline)
 (setq powerline-arrow-shape 'arrow)
-(setq powerline-color1 "grey22")
-(setq powerline-color2 "honeydew4")
+;; (setq powerline-color1 "#212D24")
+;; (setq powerline-color2 "#181d23")
+
 
 ;; Anything Modes
 (require 'anything-complete)
@@ -517,12 +519,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(ansi-term-color-vector [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"])
+ '(ansi-term-color-vector [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
  '(background-mode light)
  '(cursor-color "#52676f")
  '(custom-enabled-themes (quote (twilight-anti-bright)))
- '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "5cb805901c33a175f7505c8a8b83c43c39fb84fbae4e14cfb4d1a6c83dabbfba" "e9680c4d70f1d81afadd35647e818913da5ad34917f2c663d12e737cdecd2a77" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(custom-safe-themes (quote ("6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "5cb805901c33a175f7505c8a8b83c43c39fb84fbae4e14cfb4d1a6c83dabbfba" "e9680c4d70f1d81afadd35647e818913da5ad34917f2c663d12e737cdecd2a77" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
  '(foreground-color "#52676f"))
