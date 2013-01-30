@@ -266,17 +266,13 @@
 ;; (setq eshell-scroll-to-bottom-on-output t)
 ;; (setq eshell-scroll-show-maximum-output t)
 
-(defun set-exec-path-from-shell-PATH ()
-  (let ((path-from-shell (replace-regexp-in-string
-                          "[ \t\n]*$"
-                          ""
-                          (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
-    (setenv "PATH" path-from-shell)
-    (setq eshell-path-env path-from-shell) ; for eshell users
-    (setq exec-path (split-string path-from-shell path-separator))))
-
-(if window-system (set-exec-path-from-shell-PATH))
-(setenv "GEM_HOME" "/Users/mranallo/.gem/ruby/1.9.3")
+;; Setting the correct $PATH
+(exec-path-from-shell-initialize)
+(exec-path-from-shell-copy-env "GEM_HOME")
+(exec-path-from-shell-copy-env "GEM_PATH")
+(exec-path-from-shell-copy-env "GEM_ROOT")
+(exec-path-from-shell-copy-env "RUBY_ROOT")
+(exec-path-from-shell-copy-env "RUBY_ENGINE")
 
 ; colorful shell
 (require 'ansi-color)
@@ -290,7 +286,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ack-and-a-half     20130103.... installed  Yet another front-end for ack [source: github]
-;; anti-zenburn-theme 20130110.... installed  Low-contrast Zenburn-inverted theme [source: github]
+;; anti-zenburn-theme 20130129.... installed  Low-contrast Zenburn-inverted theme [source: github]
 ;; anything           1.287        installed  open anything / QuickSilver-like candidate-selection framework
 ;; anything-complete  1.86         installed  completion with anything
 ;; anything-exuber... 0.1.2        installed  Exuberant ctags anything.el interface
@@ -299,9 +295,14 @@
 ;; anything-match-... 1.27         installed  Humane match plug-in for anything
 ;; anything-obsolete  0.1          installed  obsolete functions of anything
 ;; browse-kill-ring   20130122.... installed  interactively insert items from kill-ring [source: github]
+;; centered-cursor... 20100310.... installed  cursor stays vertically centered [source: wiki]
 ;; coffee-mode        20130125.... installed  Major mode to edit CoffeeScript files in Emacs [source: github]
 ;; ctags-update       20121219.... installed  (auto) update TAGS in parent directory using exuberant-ctags [source: github]
+;; deft               20130129.907 installed  quickly browse, filter, and edit plain text notes [source: git]
+;; dired+             20130128.... installed  Extensions to Dired. [source: wiki]
 ;; eieio              1.4          installed  Enhanced Implememntation of Emacs Interpreted Objects
+;; exec-path-from-... 20121108.945 installed  Make Emacs use the $PATH set up by the user's shell [source: github]
+;; findr              20130127.... installed  Breadth-first file-finding facility for (X)Emacs [source: wiki]
 ;; flymake-coffee     20121107.... installed  A flymake handler for coffee script [source: github]
 ;; flymake-easy       20130106.... installed  Helpers for easily building flymake checkers [source: github]
 ;; flymake-haml       20121104.... installed  A flymake handler for haml files [source: github]
@@ -315,18 +316,28 @@
 ;; haml-mode          20130121.837 installed  Major mode for editing Haml files [source: github]
 ;; httpcode           0.1          installed  explains the meaning of an HTTP status code
 ;; inf-ruby           20121215.... installed  Run a ruby process in a buffer [source: github]
+;; inflections        20121016.957 installed  convert english words between singular and plural [source: github]
+;; jump               20121016.... installed  build functions which contextually jump between files [source: github]
 ;; logito             20120225.... installed  logging library for Emacs [source: github]
 ;; magit              20130123.... installed  Control Git from Emacs. [source: github]
+;; minimap            20110427.... installed  Minimap sidebar for Emacs [source: git]
 ;; monokai-theme      0.0.8        installed  REQUIRES EMACS 24: Monokai Color Theme for Emacs.
 ;; pcache             20120408.... installed  persistent caching for Emacs [source: github]
 ;; pivotal-tracker    20120403.... installed  Interact with Pivotal Tracker through its API [source: github]
-;; rspec-mode         20121224.7   installed  Enhance ruby-mode for RSpec [source: github]
-;; ruby-mode          20121202.... installed  Major mode for editing Ruby files [source: svn]
+;; rinari             20130107.... installed  Rinari Is Not A Rails IDE [source: github]
+;; rspec-mode         20130129.... installed  Enhance ruby-mode for RSpec [source: github]
+;; ruby-block         20111101.... installed  highlight matching block [source: wiki]
+;; ruby-compilation   20121209.... installed  run a ruby process in a compilation buffer [source: github]
+;; ruby-electric      20130127.... installed  Minor mode with electric editing commands for Ruby files [source: github]
+;; ruby-end           20121008.... installed  Automatic insertion of end blocks for Ruby. [source: github]
+;; ruby-interpolation 20120326.... installed  Ruby string interpolation helpers [source: github]
 ;; ruby-tools         20121008.... installed  Collection of handy functions for ruby-mode. [source: github]
+;; sass-mode          20101019.30  installed  Major mode for editing Sass files [source: github]
 ;; scala-mode         20121205.... installed  No description available. [source: github]
 ;; smart-tab          20120409.940 installed  Intelligent tab completion and indentation. [source: github]
 ;; smex               20120915.... installed  M-x interface with Ido-style fuzzy matching. [source: github]
 ;; solarized-theme    20130108.651 installed  The Solarized color theme, ported to Emacs. [source: github]
+;; sr-speedbar        20090723.435 installed  Same frame speedbar [source: wiki]
 ;; tango-2-theme      20120312.... installed  Tango 2 color theme for GNU Emacs 24 [source: github]
 ;; twilight-anti-b... 20120713.... installed  A soothing Emacs 24 light-on-dark theme [source: github]
 ;; twilight-bright... 20120630.... installed  A Emacs 24 faces port of the TextMate theme [source: github]
@@ -337,7 +348,7 @@
 ;; yas-jit            0.8.3        installed  Loads Yasnippets on demand (makes start up faster)
 ;; yasnippet          20130112.... installed  Yet another snippet extension for Emacs. [source: github]
 ;; zen-and-art-theme  20120622.937 installed  zen and art color theme for GNU Emacs 24 [source: github]
-;; zenburn-theme      20130128.... installed  A low contrast color theme for Emacs. [source: github]
+;; zenburn-theme      20130129.... installed  A low contrast color theme for Emacs. [source: github]
 
 
 ;; Magit settings
