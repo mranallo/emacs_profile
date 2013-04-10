@@ -131,8 +131,7 @@
 (setq inhibit-startup-message t)
 
 ; no scrollbar
-;; (scroll-bar-mode -1)
-(scroll-bar-mode)
+(scroll-bar-mode -1)
 
 ; no toolbar
 (tool-bar-mode -1)
@@ -169,8 +168,13 @@
 (global-set-key (kbd "C-x m") 'execute-extended-command)
 
 
-; search with ack
-(global-set-key (kbd "s-F") 'ack)
+; search with ag
+(setq ag-highlight-search t)
+(global-set-key (kbd "s-F") 'ag-project-at-point)
+(global-set-key (kbd "H-f") 'ag-regexp-project-at-point)
+
+;; goto line
+(global-set-key (kbd "C-l") 'goto-line)
 
 ; open file
 (global-set-key [(super o)] 'find-file)
@@ -191,6 +195,9 @@
 ; navigating through errors
 (global-set-key [(meta n)] 'next-error)
 (global-set-key [(meta p)] 'previous-error)
+
+;; XMPFilter
+(global-set-key [(hyper x)] 'xmp)
 
 ; run Ruby tests, TextMate-style
 (add-hook 'rinari-minor-mode-hook
@@ -529,16 +536,26 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Linum-format "%7i ")
  '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(ansi-term-color-vector [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
  '(background-mode light)
+ '(column-number-mode t)
  '(cursor-color "#52676f")
- '(custom-enabled-themes (quote (twilight-anti-bright)))
- '(custom-safe-themes (quote ("6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "5cb805901c33a175f7505c8a8b83c43c39fb84fbae4e14cfb4d1a6c83dabbfba" "e9680c4d70f1d81afadd35647e818913da5ad34917f2c663d12e737cdecd2a77" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(custom-enabled-themes (quote (anti-zenburn)))
+ '(custom-safe-themes (quote ("39211540c554d4d11d505a96c6baa04d43b03c04c8c3bf55f6409192936bd754" "06f5145c01ec774a0abb49eeffa3980743ce2f997112b537effeb188b7c51caf" "47d2a01f2cbd853ccd1eddcb0e9e4fdfdabcc97ddad1d1a5218304294889f731" "085b401decc10018d8ed2572f65c5ba96864486062c0a2391372223294f89460" "6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "5cb805901c33a175f7505c8a8b83c43c39fb84fbae4e14cfb4d1a6c83dabbfba" "e9680c4d70f1d81afadd35647e818913da5ad34917f2c663d12e737cdecd2a77" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
- '(foreground-color "#52676f"))
+ '(foreground-color "#52676f")
+ '(fringe-mode 4 nil (fringe))
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-tail-colors (quote (("#F2F2F2" . 0) ("#B4C342" . 20) ("#69CABF" . 30) ("#6DA8D2" . 50) ("#DEB542" . 60) ("#F2804F" . 70) ("#F771AC" . 85) ("#F2F2F2" . 100))))
+ '(main-line-color1 "#1e1e1e")
+ '(main-line-color2 "#111111")
+ '(main-line-separator-style (quote chamfer))
+ '(show-paren-mode t)
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
