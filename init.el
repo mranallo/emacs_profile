@@ -100,6 +100,9 @@
 (global-linum-mode)
 (setq linum-format " %d ") ; space after line number
 
+;; Set modes to turn off linum
+(require 'linum-off)
+
 ; show column number in bar
 (column-number-mode t)
 ; highlight URLs in comments/strings
@@ -450,6 +453,20 @@
 ;; sr-speedbar
 (require 'sr-speedbar)
 (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
+;; show all files
+(setq speedbar-show-unknown-files t)
+
+;; turn off the ugly icons
+(setq speedbar-use-images nil)
+
+;; left-side pane
+(setq sr-speedbar-right-side nil)
+
+;; don't refresh on buffer changes
+(setq sr-speedbar-auto-refresh t)
+
+;; disable line numbers in the speedbar frame
+;; (add-to-list 'linum-disabled-modes-list '(sr-speedbar))
 
 ;; rcodetools
 (vendor 'rcodetools)
@@ -517,8 +534,10 @@
 (setq deft-directory "~/Dropbox/notes")
 
 ;; Powerline https://github.com/jonathanchu/emacs-powerline
-(vendor 'powerline)
-(setq powerline-arrow-shape 'arrow)
+;; (vendor 'powerline)
+;; (require 'powerline)
+;; (powerline-default-theme)
+;; (setq powerline-arrow-shape 'arrow)
 ;; (setq powerline-color1 "#212D24")
 ;; (setq powerline-color2 "#181d23")
 
@@ -535,6 +554,12 @@
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
+;; Shell mode
+(add-to-list 'auto-mode-alist '("aliases" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("config" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("env" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("specific" . shell-script-mode))
+
 ;; Go Mode
 (add-hook 'before-save-hook 'gofmt-before-save)
 (add-hook 'go-mode-hook (lambda ()
@@ -543,8 +568,7 @@
                           (local-set-key (kbd "C-c i") 'go-goto-imports)))
 
 ;; Git Gutter Mode Fringe
-(git-gutter+-mode 1)
-
+(global-git-gutter+-mode 1)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -557,9 +581,10 @@
  '(background-color "#fcf4dc")
  '(background-mode light)
  '(column-number-mode t)
+ '(compilation-message-face (quote default))
  '(cursor-color "#52676f")
  '(custom-enabled-themes (quote (twilight-bright)))
- '(custom-safe-themes (quote ("5e1d1564b6a2435a2054aa345e81c89539a72c4cad8536cfe02583e0b7d5e2fa" "1f4e6cf4cb3bdba8afdb9244e037698238080eeecb209084602f7d717225f102" "a5a1e3cd5f790846f4eec5fcff52935e5ef6d713a0f9342fef12eccfd9e9eff0" "1cf3f29294c5a3509b7eb3ff9e96f8e8db9d2d08322620a04d862e40dc201fe2" "764777857ef24b4ef1041be725960172ac40964b9f23a75894a578759ba6652f" "c377a5f3548df908d58364ec7a0ee401ee7235e5e475c86952dc8ed7c4345d8e" "8c5ffc9848db0f9ad4e296fa3cba7f6ea3b0e4e00e8981a59592c99d21f99471" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "e4eaeb23c81fd6c6b1796b823dbec0129d828e13da89a222901a758348db57fd" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" "e9a1226ffed627ec58294d77c62aa9561ec5f42309a1f7a2423c6227e34e3581" "d24e10524bb50385f7631400950ba488fa45560afcadd21e6e03c2f5d0fad194" "84c93dd294de8d877259fe2a4ab6540aaadbba3fbeb466692187f7a265c41203" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "39211540c554d4d11d505a96c6baa04d43b03c04c8c3bf55f6409192936bd754" "06f5145c01ec774a0abb49eeffa3980743ce2f997112b537effeb188b7c51caf" "47d2a01f2cbd853ccd1eddcb0e9e4fdfdabcc97ddad1d1a5218304294889f731" "085b401decc10018d8ed2572f65c5ba96864486062c0a2391372223294f89460" "6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "5cb805901c33a175f7505c8a8b83c43c39fb84fbae4e14cfb4d1a6c83dabbfba" "e9680c4d70f1d81afadd35647e818913da5ad34917f2c663d12e737cdecd2a77" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
+ '(custom-safe-themes (quote ("3341f6db5ac17e4174f7488c40676e7f0464f1e88519a59303dc7e7774245bbf" "fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" "f89e21c3aef10d2825f2f079962c2237cd9a45f4dc1958091be8a6f5b69bb70c" "5e1d1564b6a2435a2054aa345e81c89539a72c4cad8536cfe02583e0b7d5e2fa" "1f4e6cf4cb3bdba8afdb9244e037698238080eeecb209084602f7d717225f102" "a5a1e3cd5f790846f4eec5fcff52935e5ef6d713a0f9342fef12eccfd9e9eff0" "1cf3f29294c5a3509b7eb3ff9e96f8e8db9d2d08322620a04d862e40dc201fe2" "764777857ef24b4ef1041be725960172ac40964b9f23a75894a578759ba6652f" "c377a5f3548df908d58364ec7a0ee401ee7235e5e475c86952dc8ed7c4345d8e" "8c5ffc9848db0f9ad4e296fa3cba7f6ea3b0e4e00e8981a59592c99d21f99471" "68769179097d800e415631967544f8b2001dae07972939446e21438b1010748c" "e4eaeb23c81fd6c6b1796b823dbec0129d828e13da89a222901a758348db57fd" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" "e9a1226ffed627ec58294d77c62aa9561ec5f42309a1f7a2423c6227e34e3581" "d24e10524bb50385f7631400950ba488fa45560afcadd21e6e03c2f5d0fad194" "84c93dd294de8d877259fe2a4ab6540aaadbba3fbeb466692187f7a265c41203" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "39211540c554d4d11d505a96c6baa04d43b03c04c8c3bf55f6409192936bd754" "06f5145c01ec774a0abb49eeffa3980743ce2f997112b537effeb188b7c51caf" "47d2a01f2cbd853ccd1eddcb0e9e4fdfdabcc97ddad1d1a5218304294889f731" "085b401decc10018d8ed2572f65c5ba96864486062c0a2391372223294f89460" "6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "5cb805901c33a175f7505c8a8b83c43c39fb84fbae4e14cfb4d1a6c83dabbfba" "e9680c4d70f1d81afadd35647e818913da5ad34917f2c663d12e737cdecd2a77" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "e60c82f43f96935aaff6387fc270b2011d40543c5fc2ba70c2c3038e0d8a6e81" "81805c86e126018f339211bb3f03e1c9eae30adfbe72832bd02f89ca0cbe5885" "f03970e52d0b3072e39439456ef3279ca71b88847a0992d517afaee83fc01488" "7511ae742ae5e87bc096db346ab4694c1042a4a6035d7d15f4b86b4f2213c8d8" "9f5fe6191b981ce29a2b4f8e4dbcefef7dd33b292d80c620f754be174efa9d58" "5debeb813b180bd1c3756306cd8c83ac60fda55f85fb27249a0f2d55817e3cab" "117284df029007a8012cae1f01c3156d54a0de4b9f2f381feab47809b8a1caef" "e6fca0aa3f94451ed1fc06b1f022ded9f4a20ad5bd64e14fc568cd73b7cd1e49" "86adc18aa6fb3ea0a801831f7b0bc88ed5999386" "0174d99a8f1fdc506fa54403317072982656f127" "5600dc0bb4a2b72a613175da54edb4ad770105aa" "83653b68e5a1c1184e90b3433dd1ffc0da65f517" default)))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
  '(foreground-color "#52676f")
@@ -569,6 +594,8 @@
  '(main-line-color1 "#1e1e1e")
  '(main-line-color2 "#111111")
  '(main-line-separator-style (quote chamfer))
+ '(powerline-color1 "#1E1E1E")
+ '(powerline-color2 "#111111")
  '(show-paren-mode t)
  '(syslog-debug-face (quote ((t :background unspecified :foreground "#2aa198" :weight bold))))
  '(syslog-error-face (quote ((t :background unspecified :foreground "#dc322f" :weight bold))))
@@ -588,4 +615,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mode-line ((((class color) (min-colors 89)) (:foreground "#657b83" :background "#eee8d5" :box (:line-width -1 :style released-button))))))
+ )
