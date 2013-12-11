@@ -259,3 +259,10 @@ point reaches the beginning or end of the buffer, stop there."
   "Edit the `user-init-file', in another window."
   (interactive)
   (find-file-other-window user-init-file))
+
+(defun minimap-toggle ()
+  "Toggle minimap for current buffer."
+  (interactive)
+  (if (null minimap-bufname)
+      (minimap-create)
+    (minimap-kill)))
