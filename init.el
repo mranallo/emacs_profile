@@ -422,6 +422,7 @@
 (setq auto-mode-alist (cons '("\\.gemspec" . ruby-mode) auto-mode-alist))
 (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 (add-hook 'ruby-electric-mode-hook 'ruby-interpolation-mode)
+(add-hook 'ruby-mode-hook 'robe-mode)
 
 ;; smart-tab
 (require 'smart-tab)
