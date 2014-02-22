@@ -217,9 +217,8 @@
 (global-set-key (kbd "C-c r") 'revert-buffer)
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
 (global-set-key (kbd "s-T") 'anything-exuberant-ctags-select)
-(global-set-key (kbd "s-t") 'helm-cmd-t)
-(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-(global-set-key (kbd "C-x b") 'lusty-buffer-explorer)
+(global-set-key (kbd "s-t") 'anything-git-goto)
+(global-set-key (kbd "C-x b") 'ido-switch-buffer)
 
 ;; If you want to be able to M-x without meta
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
@@ -261,6 +260,10 @@
 
 ;; Quickly jump to init file
 (global-set-key (kbd "C-c I") 'find-user-init-file)
+
+;; Dired edit file at point
+;;(define-key dired-mode-map [f2] 'dired-efap)
+;;(define-key dired-mode-map [down-mouse-1] 'dired-efap-click)
 
 
 (key-chord-define-global "jj" 'ace-jump-word-mode)
@@ -462,9 +465,9 @@
 (add-hook 'sass-mode-hook 'flymake-sass-load)
 
 ;; flyspell
-(setq flyspell-issue-message-flg nil)
-(add-hook 'ruby-mode-hook
-          (lambda () (flyspell-prog-mode)))
+;; (setq flyspell-issue-message-flg nil)
+;; (add-hook 'ruby-mode-hook
+;;           (lambda () (flyspell-prog-mode)))
 
 ;; Deft (for notes)
 (require 'deft)
@@ -541,3 +544,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'upcase-region 'disabled nil)
