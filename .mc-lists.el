@@ -3,9 +3,12 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        smex
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        ccm-mwheel-scroll
         haml-electric-backspace
+        ido-find-file
         ))
