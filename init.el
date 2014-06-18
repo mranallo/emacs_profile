@@ -223,7 +223,7 @@
 (global-set-key (kbd "C-c r") 'revert-buffer)
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
 (global-set-key (kbd "s-T") 'anything-exuberant-ctags-select)
-(global-set-key (kbd "s-t") 'anything-git-goto)
+;; (global-set-key (kbd "s-t") 'anything-git-goto)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 
 ;; If you want to be able to M-x without meta
@@ -505,6 +505,17 @@
 
 ;; Git Gutter Mode Fringe
 (global-git-gutter+-mode 1)
+
+
+;; Projectile Settings
+(require 'grizzl)
+(projectile-global-mode)
+(setq projectile-enable-caching t)
+(setq projectile-completion-system 'grizzl)
+;; Press Command-p for fuzzy find in project
+(global-set-key (kbd "s-t") 'projectile-find-file)
+;; Press Command-b for fuzzy switch buffer
+(global-set-key (kbd "s-b") 'projectile-switch-to-buffer)
 
 
 ;; some github themes
