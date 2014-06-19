@@ -19,13 +19,19 @@
   (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t))
 )
 
+;;;;;;;;;;;;;;;;;;;;;;; Cask ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'cask "/usr/local/Cellar/cask/0.7.0/cask.el")
+(cask-initialize)
+(require 'pallet)
+
 ;;;;;;;;;;;;;;;;;;;;;;; ELPA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'package)
+;;(require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 ;; (add-to-list 'package-archives '("Tromey" . "http://tromey.com/elpa/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
+;;(package-initialize)
 
 ;;;;;;;;;;;;;;;;;;;; Buffer Tweaks ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -442,12 +448,12 @@
 (setq smart-tab-using-hippie-expand nil)
 
 ;; YA Snippets
-(require 'yasnippet)
-(yas-global-mode 1)
+;;(require 'yasnippet)
+;;(yas-global-mode 1)
 ;; (yas-load-directory "~/.emacs.d/vendor/snippets")
-(setq yas-prompt-functions '(yas/ido-prompt
-                             yas/dropdown-prompt
-                             yas/completing-prompt))
+;;(setq yas-prompt-functions '(yas/ido-prompt
+;;                             yas/dropdown-prompt
+;;                             yas/completing-prompt))
 
 ;; Smartparens highlight
 (show-smartparens-global-mode +1)
