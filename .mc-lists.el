@@ -11,4 +11,5 @@
         ccm-mwheel-scroll
         haml-electric-backspace
         ido-find-file
+        ns-copy-including-secondary
         ))

@@ -229,7 +229,7 @@
 (global-set-key (kbd "C-c r") 'revert-buffer)
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
 (global-set-key (kbd "s-T") 'anything-exuberant-ctags-select)
-;; (global-set-key (kbd "s-t") 'anything-git-goto)
+(global-set-key (kbd "s-t") 'anything-git-goto)
 (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 
 ;; If you want to be able to M-x without meta
@@ -401,13 +401,13 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 ;; sr-speedbar
-;; (require 'sr-speedbar)
-;; (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
-;; ;; show all files
-;; (setq speedbar-show-unknown-files t)
+(require 'sr-speedbar)
+(global-set-key (kbd "s-\\") 'sr-speedbar-toggle)
+;; show all files
+(setq speedbar-show-unknown-files t)
 
 ;; turn off the ugly icons
-(setq speedbar-use-images nil)
+;; (setq speedbar-use-images nil)
 
 ;; left-side pane
 (setq sr-speedbar-right-side nil)
@@ -514,15 +514,15 @@
 
 
 ;; Projectile Settings
-(require 'grizzl)
-(projectile-global-mode)
-(setq projectile-enable-caching t)
-(setq projectile-completion-system 'grizzl)
-;; Press Command-p for fuzzy find in project
-(global-set-key (kbd "s-t") 'projectile-find-file)
-;; Press Command-b for fuzzy switch buffer
-(global-set-key (kbd "s-b") 'projectile-switch-to-buffer)
-
+;; (require 'grizzl)
+;; (projectile-global-mode)
+;; (add-hook 'projectile-mode-hook 'projectile-rails-on)
+;; ;; (setq projectile-enable-caching t)
+;; (setq projectile-completion-system 'grizzl)
+;; ;; Press Command-p for fuzzy find in project
+;; (global-set-key (kbd "s-t") 'projectile-find-file)
+;; ;; Press Command-b for fuzzy switch buffer
+;; (global-set-key (kbd "s-b") 'projectile-switch-to-buffer)
 
 ;; some github themes
 (add-to-list 'custom-theme-load-path "~/.emacs.d/vendor/base16")
