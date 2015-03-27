@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        smarter-move-beginning-of-line
         smex
         ))
 
