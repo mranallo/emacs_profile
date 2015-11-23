@@ -2,6 +2,13 @@
 ;(require 'cl)
 
 ; some modes need to call stuff on the exec-path
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (push "/usr/local/bin" exec-path)
 
 ; Start in server mode
@@ -27,7 +34,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;; ELPA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives
+             '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
 ;;;;;;;;;;;;;;;;;;;; Buffer Tweaks ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -99,9 +109,9 @@
 (set-selection-coding-system 'utf-8)
 
 ; whitespace
-;(global-whitespace-mode t)
-(setq show-trailing-whitespace t)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; (global-whitespace-mode t)
+;; (setq show-trailing-whitespace t)
+(add-hook 'before-save-hook 'whitespace-cleanup)
 
 ; line numbering
 (require 'linum)
@@ -130,8 +140,6 @@
 (global-font-lock-mode t)
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
-
-(set-frame-font "Source Code Pro Light-15")
 
 ; don't display startup message
 (setq inhibit-startup-message t)
@@ -175,7 +183,7 @@
 
 
 ; search with ag
-(setq helm-ag-base-command "ag --nocolor --nogroup --ignore-case --skip-vcs-ignores --ignore `*TAGS`")
+(setq helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
 (setq helm-ag-insert-at-point 'symbol)
 
 (defun projectile-helm-ag ()
@@ -215,7 +223,7 @@
 ; magit
 (global-set-key (kbd "C-c i") 'magit-status)
 (global-set-key (kbd "<f5>") 'magit-status)
-(global-set-key (kbd "<f6>") 'magit-blame-mode)
+(global-set-key (kbd "<f6>") 'magit-blame)
 
 ;; This below is from my previous bindigs file
 
@@ -231,6 +239,13 @@
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
 (global-set-key (kbd "s-t") 'helm-projectile)
 (global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-s") 'isearch-forward)
+(global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
+
+
+;; (global-set-key "\C-s" 'swiper-helm)
+;; (global-set-key "\C-r" 'swiper-helm)
 
 ;; If you want to be able to M-x without meta
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
@@ -278,13 +293,14 @@
 ;;(define-key dired-mode-map [down-mouse-1] 'dired-efap-click)
 
 
-(key-chord-define-global "jj" 'ace-jump-word-mode)
-(key-chord-define-global "jl" 'ace-jump-line-mode)
-(key-chord-define-global "jk" 'ace-jump-char-mode)
+(key-chord-define-global "jj" 'avy-goto-word-0)
+(key-chord-define-global "jl" 'avy-goto-line)
+(key-chord-define-global "jk" 'avy-goto-char)
 (key-chord-define-global "uu" 'undo-tree-visualize)
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-define-global "yy" 'helm-show-kill-ring)
 (key-chord-define-global "bb" 'helm-mini)
+(key-chord-define-global "ww" 'ace-window)
 
 (key-chord-mode +1)
 
@@ -306,6 +322,12 @@
 ;; (setq eshell-scroll-to-bottom-on-output t)
 ;; (setq eshell-scroll-show-maximum-output t)
 
+
+;; Emoji support
+(if window-system
+    (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend))
+
+
 ;; Setting the correct $PATH
 (exec-path-from-shell-initialize)
 (exec-path-from-shell-copy-env "GEM_HOME")
@@ -315,9 +337,9 @@
 (exec-path-from-shell-copy-env "RUBY_ENGINE")
 
 ; colorful shell
-(require 'ansi-color)
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;; (require 'ansi-color)
+;; (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ; escape the shell
 ;; (add-hook 'eshell-mode-hook
@@ -357,6 +379,7 @@
   (magit-refresh))
 
 (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
+(setq magit-last-seen-setup-instructions "1.4.0")
 
 ;; Hide minor modes
 (rich-minority-mode 1)
@@ -392,19 +415,17 @@
       helm-ff-file-name-history-use-recentf t)
 
 (helm-mode 1)
-
+(helm-autoresize-mode 1)
 
 ;; Haml because they make me
 (require 'haml-mode)
-(add-hook 'haml-mode-hook 'flymake-haml-load)
-
-;; Minimap like SublimeText2
-(require 'minimap)
-(global-set-key (kbd "C-c m") 'minimap-toggle)
 
 ;; Undo Tree
 (require 'undo-tree)
 (global-undo-tree-mode)
+
+;; pianobar
+(autoload 'pianobar "pianobar" nil t)
 
 ;; Keyboard Shortcuts
 (vendor 'textmate)
@@ -444,36 +465,59 @@
 ;; rcodetools
 (vendor 'rcodetools)
 
+;; flycheck
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(flycheck-define-checker jsxhint-checker
+  "A JSX syntax and style checker based on JSXHint."
+
+  :command ("jsxhint" source)
+  :error-patterns
+  ((error line-start (1+ nonl) ": line " line ", col " column ", " (message) line-end))
+  :modes (web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (equal web-mode-content-type "jsx")
+              ;; enable flycheck
+              (flycheck-select-checker 'jsxhint-checker)
+              (flycheck-mode))))
+
+
 ;; Ruby
 (autoload 'ruby-mode "ruby-mode" "Mode for editing ruby source files" t)
 (autoload 'run-ruby "inf-ruby" "Run an inferior Ruby process")
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-(setq auto-mode-alist (cons '("Rakefile" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("Capfile" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("Gemfile" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.rake" . ruby-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.gemspec" . ruby-mode) auto-mode-alist))
-(add-hook 'ruby-mode-hook 'flymake-ruby-load)
+(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
 (add-hook 'ruby-electric-mode-hook 'ruby-interpolation-mode)
+(add-hook 'ruby-mode-hook 'flycheck-mode)
+(add-hook 'ruby-mode-hook 'robe-mode)
 
 ;; smart-tab
 (require 'smart-tab)
-(add-to-list 'hippie-expand-try-functions-list
-             'yas/hippie-try-expand) ;put yasnippet in hippie-expansion list
+;; (add-to-list 'hippie-expand-try-functions-list
+;;              'yas/hippie-try-expand) ;put yasnippet in hippie-expansion list
 (global-smart-tab-mode 1)
 (setq smart-tab-using-hippie-expand t)
 
 ;; YA Snippets
 (require 'yasnippet)
 (yas-global-mode 1)
-;; (yas-load-directory "~/.emacs.d/vendor/snippets")
-;; (setq yas-prompt-functions '(yas/ido-prompt
-                            ;; yas/dropdown-prompt
-                            ;; yas/completing-prompt))
+(setq yas-prompt-functions '(yas/ido-prompt
+                            yas/dropdown-prompt
+                            yas/completing-prompt))
 
 ;; Smartparens highlight
 (show-smartparens-global-mode +1)
 (require 'smartparens-ruby)
+
+;; Crystal Mode
+;; (vendor 'crystal-mode)
+;; (vendor 'crystal-flycheck)
 
 ;; Coffeescript mode
 (vendor 'coffee-mode)
@@ -485,12 +529,10 @@
 
 (add-hook 'coffee-mode-hook
           '(lambda() (coffee-custom)))
-(add-hook 'coffee-mode-hook 'flymake-coffee-load)
 
 ;; Sass mode
 (vendor 'sass-mode)
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . css-mode))
-(add-hook 'sass-mode-hook 'flymake-sass-load)
 
 ;; flyspell
 (setq flyspell-issue-message-flg nil)
@@ -526,6 +568,22 @@
 ;; Git Gutter Mode Fringe
 (global-git-gutter+-mode 1)
 
+;; Web Mode
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq qweb-mode-css-indent-offset 2)
+  (add-to-list 'web-mode-comment-formats '("jsx" . "//"))
+)
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+(defadvice web-mode-highlight-part (around tweak-jsx activate)
+  (if (equal web-mode-content-type "jsx")
+      (let ((web-mode-enable-part-face nil))
+        ad-do-it)
+    ad-do-it))
+
 ;; Projectile Settings
 (projectile-global-mode)
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
@@ -536,8 +594,55 @@
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
-;; Auto-Complete Mode
-(global-auto-complete-mode t)
+;; Company Mode
+(add-hook 'after-init-hook 'global-company-mode)
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-inf-ruby))
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-emoji))
+
+(require 'company-web-html)                          ; load company mode html backend
+(require 'company-web-slim)                          ; load company mode slim backend
+
+(setq company-tooltip-limit 20)                      ; bigger popup window
+(setq company-tooltip-align-annotations 't)          ; align annotations to the right tooltip border
+(setq company-idle-delay .3)                         ; decrease delay before autocompletion popup shows
+(setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+;; (global-set-key (kbd "C-c /") 'company-files)        ; Force complete file names on "C-c /" key
+
+(require 'compile)
+;; Find root directory by searching for Gemfile
+(defun* get-closest-gemfile-root (&optional (file "Gemfile"))
+  (let ((root (expand-file-name "/")))
+    (loop
+     for d = default-directory then (expand-file-name ".." d)
+     if (file-exists-p (expand-file-name file d))
+     return d
+     if (equal d root)
+     return nil)))
+
+(defun rspec-compile-file ()
+  (interactive)
+  (compile (format "cd %s;pco box rspec %s"
+                   (get-closest-gemfile-root)
+                   (file-relative-name (buffer-file-name) (get-closest-gemfile-root))
+                   ) t))
+
+(defun rspec-compile-on-line ()
+  (interactive)
+  (compile (format "cd %s;pco box rspec %s:%s"
+                   (get-closest-gemfile-root)
+                   (file-relative-name (buffer-file-name) (get-closest-gemfile-root))
+                   (line-number-at-pos)
+                   ) t))
+
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c l") 'rspec-compile-on-line)
+            (local-set-key (kbd "C-c k") 'rspec-compile-file)
+            ))
+
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -545,6 +650,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Linum-format "%7i ")
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(ansi-term-color-vector
@@ -554,7 +661,7 @@
  '(column-number-mode t)
  '(compilation-message-face (quote default))
  '(cursor-color "#52676f")
- '(custom-enabled-themes (quote (twilight-bright)))
+ '(custom-enabled-themes (quote (twilight-anti-bright)))
  '(custom-safe-themes t)
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
@@ -577,7 +684,9 @@
  '(main-line-separator-style (quote chamfer))
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
- '(rm-blacklist (quote (" hl-p" " mate" " MRev" " Undo-Tree" " GitGutter" " Helm" " Smrt")))
+ '(rm-blacklist
+   (quote
+    (" hl-p" " mate" " MRev" " Undo-Tree" " GitGutter" " Helm" " Smrt")))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -594,7 +703,6 @@
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
  '(tool-bar-mode nil)
- '(transient-mark-mode (quote (only . t)))
  '(vc-annotate-background "#d4d4d4")
  '(vc-annotate-color-map
    (quote
@@ -625,5 +733,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight normal :height 130 :width normal))))
+ '(helm-header ((t (:inherit header-line))))
+ '(helm-source-header ((t (:background "#abd7f0" :foreground "black" :height 1.0)))))
 (put 'upcase-region 'disabled nil)
