@@ -12,5 +12,8 @@
         ccm-mwheel-scroll
         haml-electric-backspace
         ido-find-file
+        mouse-set-region
         ns-copy-including-secondary
+        ruby-end-space
+        undo-tree-visualize
         ))

@@ -9,3 +9,7 @@ eshell
 projectile-bookmarks.eld
 projectile.cache
 elpa/*
+recentf
+rake.cache
+vendor/atom-one-dark-theme/
+vendor/crystal-mode/

@@ -281,6 +281,10 @@
 (global-set-key (kbd "C-.") 'set-rectangular-region-anchor)
 (global-set-key (kbd "s-<mouse-1>") 'mc/add-cursor-on-click)
 
+;; Sane Term
+(global-set-key (kbd "C-x t") 'sane-term)
+(global-set-key (kbd "C-x T") 'sane-term-create)
+
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
                 'smarter-move-beginning-of-line)
@@ -321,6 +325,9 @@
 ;; scroll to bottom on output, more like a terminal
 ;; (setq eshell-scroll-to-bottom-on-output t)
 ;; (setq eshell-scroll-show-maximum-output t)
+
+(add-hook 'term-mode-hook (lambda()
+        (setq yas-dont-activate t)))
 
 
 ;; Emoji support
@@ -468,19 +475,19 @@
 ;; flycheck
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
-(flycheck-define-checker jsxhint-checker
-  "A JSX syntax and style checker based on JSXHint."
 
-  :command ("jsxhint" source)
-  :error-patterns
-  ((error line-start (1+ nonl) ": line " line ", col " column ", " (message) line-end))
-  :modes (web-mode))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (equal web-mode-content-type "jsx")
-              ;; enable flycheck
-              (flycheck-select-checker 'jsxhint-checker)
-              (flycheck-mode))))
+;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+
+;; disable json-jsonlist checking for json files
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(json-jsonlist)))
 
 
 ;; Ruby
@@ -516,8 +523,8 @@
 (require 'smartparens-ruby)
 
 ;; Crystal Mode
-;; (vendor 'crystal-mode)
-;; (vendor 'crystal-flycheck)
+(vendor 'crystal-mode)
+(vendor 'crystal-flycheck)
 
 ;; Coffeescript mode
 (vendor 'coffee-mode)
@@ -587,7 +594,7 @@
 ;; Projectile Settings
 (projectile-global-mode)
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
-(setq projectile-enable-caching t)
+;; (setq projectile-enable-caching t)
 (setq projectile-completion-system 'helm)
 
 ;; Expand Region http://emacsrocks.com/e09.html
@@ -642,7 +649,8 @@
             (local-set-key (kbd "C-c k") 'rspec-compile-file)
             ))
 
-
+;; Custom Theme
+(add-to-list 'custom-theme-load-path "~/.emacs.d/vendor/atom-one-dark-theme/")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -650,10 +658,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Linum-format "%7i ")
- '(ansi-color-faces-vector
-   [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
-   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+   ["black" "red3" "green3" "yellow3" "DeepSkyBlue2" "magenta3" "cyan3" "gray90"])
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
@@ -661,7 +667,7 @@
  '(column-number-mode t)
  '(compilation-message-face (quote default))
  '(cursor-color "#52676f")
- '(custom-enabled-themes (quote (twilight-anti-bright)))
+ '(custom-enabled-themes (quote (atom-one-dark)))
  '(custom-safe-themes t)
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
@@ -682,6 +688,9 @@
  '(main-line-color1 "#1e1e1e")
  '(main-line-color2 "#111111")
  '(main-line-separator-style (quote chamfer))
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
  '(rm-blacklist
@@ -735,5 +744,11 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight normal :height 130 :width normal))))
  '(helm-header ((t (:inherit header-line))))
- '(helm-source-header ((t (:background "#abd7f0" :foreground "black" :height 1.0)))))
+ '(helm-source-header ((t (:background "#abd7f0" :foreground "black" :height 1.0))))
+ '(term-color-blue ((t (:background "SteelBlue2" :foreground "SteelBlue2"))))
+ '(term-color-cyan ((t (:background "PaleTurquoise3" :foreground "PaleTurquoise3"))))
+ '(term-color-green ((t (:background "light green" :foreground "light green"))))
+ '(term-color-magenta ((t (:background "pink1" :foreground "pink1"))))
+ '(term-color-red ((t (:background "indian red" :foreground "indian red"))))
+ '(term-color-yellow ((t (:background "LightYellow3" :foreground "LightYellow3")))))
 (put 'upcase-region 'disabled nil)
