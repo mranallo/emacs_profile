@@ -28,14 +28,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;; Cask ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'cask "/usr/local/Cellar/cask/0.7.2/cask.el")
+(require 'cask "/usr/local/Cellar/cask/0.8.0/cask.el")
 (cask-initialize)
 (require 'pallet)
 
 ;;;;;;;;;;;;;;;;;;;;;;; ELPA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
              '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
@@ -161,6 +159,9 @@
 
 ; no bell
 (setq ring-bell-function 'ignore)
+
+;; Cursor type
+(setq-default cursor-type 'box)
 
 ;;;;;;;;;;;;;;;;;;;; Keys ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -305,6 +306,7 @@
 (key-chord-define-global "yy" 'helm-show-kill-ring)
 (key-chord-define-global "bb" 'helm-mini)
 (key-chord-define-global "ww" 'ace-window)
+(key-chord-define-global "kk" 'cfn-validate-file)
 
 (key-chord-mode +1)
 
@@ -320,7 +322,7 @@
 ;; (setq eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
 
 ; can't write over prompt, that would be weird
-(setq comint-prompt-read-only)
+(setq comint-prompt-read-only t)
 
 ;; scroll to bottom on output, more like a terminal
 ;; (setq eshell-scroll-to-bottom-on-output t)
@@ -424,6 +426,9 @@
 (helm-mode 1)
 (helm-autoresize-mode 1)
 
+;; Persistant Scratch
+(persistent-scratch-setup-default)
+
 ;; Haml because they make me
 (require 'haml-mode)
 
@@ -445,8 +450,8 @@
 (setq psw-in-window-center t)
 
 ;; Centered Cursor mode
-(require 'centered-cursor-mode)
-(global-centered-cursor-mode t)
+;; (require 'centered-cursor-mode)
+;; (global-centered-cursor-mode t)
 
 ;; kill ring browsing
 (require 'browse-kill-ring)
@@ -489,6 +494,14 @@
   (append flycheck-disabled-checkers
     '(json-jsonlist)))
 
+;; Use json load flymake
+(add-hook 'json-mode 'flymake-json-load)
+
+;; change indent level for JSON
+(add-hook 'json-mode-hook
+          (lambda ()
+            (make-local-variable 'js-indent-level)
+            (setq js-indent-level 2)))
 
 ;; Ruby
 (autoload 'ruby-mode "ruby-mode" "Mode for editing ruby source files" t)
@@ -607,6 +620,8 @@
   '(add-to-list 'company-backends 'company-inf-ruby))
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-emoji))
+(setq company-dabbrev-downcase nil)
+
 
 (require 'company-web-html)                          ; load company mode html backend
 (require 'company-web-slim)                          ; load company mode slim backend
@@ -643,11 +658,18 @@
                    (line-number-at-pos)
                    ) t))
 
-(add-hook 'ruby-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-c l") 'rspec-compile-on-line)
-            (local-set-key (kbd "C-c k") 'rspec-compile-file)
-            ))
+;; Custom validate for CloudFormation
+(defun cfn-validate-file ()
+  ;; This calls the aws-cli to compile the current cloudformation template
+  (interactive)
+  (compile (format "aws cloudformation validate-template --template-body file://%s"
+                   (buffer-file-name))
+           t))
+
+(add-hook 'yaml-mode-hook
+          '(lambda ()
+             (define-key yaml-mode-map "/C-c k" 'cfn-validate-file)))
+
 
 ;; Custom Theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/vendor/atom-one-dark-theme/")
@@ -658,6 +680,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Linum-format "%7i ")
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
    ["black" "red3" "green3" "yellow3" "DeepSkyBlue2" "magenta3" "cyan3" "gray90"])
  '(ansi-term-color-vector
@@ -666,14 +690,27 @@
  '(background-mode light)
  '(column-number-mode t)
  '(compilation-message-face (quote default))
+ '(cua-global-mark-cursor-color "#2aa198")
+ '(cua-normal-cursor-color "#657b83")
+ '(cua-overwrite-cursor-color "#b58900")
+ '(cua-read-only-cursor-color "#859900")
  '(cursor-color "#52676f")
+ '(cursor-type (quote box))
  '(custom-enabled-themes (quote (atom-one-dark)))
  '(custom-safe-themes t)
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
  '(foreground-color "#52676f")
  '(fringe-mode 4 nil (fringe))
+ '(global-centered-cursor-mode t)
+ '(global-linum-mode t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors
+   (--map
+    (solarized-color-blend it "#fdf6e3" 0.25)
+    (quote
+     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
+ '(highlight-symbol-foreground-color "#586e75")
  '(highlight-tail-colors
    (quote
     (("#F2F2F2" . 0)
@@ -684,6 +721,16 @@
      ("#F2804F" . 70)
      ("#F771AC" . 85)
      ("#F2F2F2" . 100))))
+ '(hl-bg-colors
+   (quote
+    ("#DEB542" "#F2804F" "#FF6E64" "#F771AC" "#9EA0E5" "#69B7F0" "#69CABF" "#B4C342")))
+ '(hl-fg-colors
+   (quote
+    ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
+ '(hl-sexp-background-color "#efebe9")
+ '(json-reformat:indent-width 2)
+ '(linum-format " %d ")
+ '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
  '(main-line-color1 "#1e1e1e")
  '(main-line-color2 "#111111")
@@ -691,11 +738,17 @@
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(package-selected-packages
+   (quote
+    (nginx-mode markdown-mode dockerfile-mode chef-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode sr-speedbar smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools ruby-refactor rspec-mode rich-minority rhtml-mode request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-haml flymake-go flymake-coffee flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web coffee-mode chruby centered-cursor-mode browse-kill-ring blank-mode auto-complete ace-jump-mode ace-jump-buffer)))
+ '(pos-tip-background-color "#eee8d5")
+ '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
  '(rm-blacklist
    (quote
     (" hl-p" " mate" " MRev" " Undo-Tree" " GitGutter" " Helm" " Smrt")))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -711,6 +764,8 @@
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
+ '(term-default-bg-color "#fdf6e3")
+ '(term-default-fg-color "#657b83")
  '(tool-bar-mode nil)
  '(vc-annotate-background "#d4d4d4")
  '(vc-annotate-color-map
@@ -736,15 +791,19 @@
  '(vc-annotate-very-old-color "#23733c")
  '(weechat-color-list
    (quote
-    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83"))))
+    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
+ '(xterm-color-names
+   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
+ '(xterm-color-names-bright
+   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight normal :height 130 :width normal))))
+ '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight thin :height 150 :width normal))))
  '(helm-header ((t (:inherit header-line))))
- '(helm-source-header ((t (:background "#abd7f0" :foreground "black" :height 1.0))))
+ '(helm-source-header ((t (:background "gray66" :foreground "black" :weight bold :height 1.0))))
  '(term-color-blue ((t (:background "SteelBlue2" :foreground "SteelBlue2"))))
  '(term-color-cyan ((t (:background "PaleTurquoise3" :foreground "PaleTurquoise3"))))
  '(term-color-green ((t (:background "light green" :foreground "light green"))))
