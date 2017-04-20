@@ -329,7 +329,7 @@
 ;; (setq eshell-scroll-show-maximum-output t)
 
 (add-hook 'term-mode-hook (lambda()
-        (setq yas-dont-activate t)))
+        (setq yas-dont-activate-functions t)))
 
 
 ;; Emoji support
@@ -371,22 +371,6 @@
 
 (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
 
-(defun magit-toggle-whitespace ()
-  (interactive)
-  (if (member "-w" magit-diff-options)
-      (magit-dont-ignore-whitespace)
-    (magit-ignore-whitespace)))
-
-(defun magit-ignore-whitespace ()
-  (interactive)
-  (add-to-list 'magit-diff-options "-w")
-  (magit-refresh))
-
-(defun magit-dont-ignore-whitespace ()
-  (interactive)
-  (setq magit-diff-options (remove "-w" magit-diff-options))
-  (magit-refresh))
-
 (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
 (setq magit-last-seen-setup-instructions "1.4.0")
 
@@ -403,17 +387,13 @@
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
 
-;;(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
-;;(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-;;(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x m") 'helm-M-x)
 (global-set-key (kbd "C-x C-m") 'helm-M-x)
 (global-set-key (kbd "M-X") 'helm-M-x)
 
 (when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+  (setq helm-net-prefer-curl t))
 
 (setq helm-quick-update                     t ; do not display invisible candidates
       helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
@@ -461,18 +441,7 @@
 (require 'dired+)
 (setq dired-recursive-deletes 'top)
 (put 'dired-find-alternate-file 'disabled nil)
-
-;; sr-speedbar
-(require 'sr-speedbar)
-(global-set-key (kbd "s-\\") 'sr-speedbar-toggle)
-;; show all files
-(setq speedbar-show-unknown-files t)
-
-;; left-side pane
-(setq sr-speedbar-right-side nil)
-
-;; don't refresh on buffer changes
-(setq sr-speedbar-auto-refresh t)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 ;; rcodetools
 (vendor 'rcodetools)
@@ -539,21 +508,6 @@
 (vendor 'crystal-mode)
 (vendor 'crystal-flycheck)
 
-;; Coffeescript mode
-(vendor 'coffee-mode)
-(add-to-list 'auto-mode-alist '("\\.coffee$" . coffee-mode))
-(add-to-list 'auto-mode-alist '("Cakefile" . coffee-mode))
-(defun coffee-custom ()
-  "coffee-mode-hook"
-  (set (make-local-variable 'tab-width) 2))
-
-(add-hook 'coffee-mode-hook
-          '(lambda() (coffee-custom)))
-
-;; Sass mode
-(vendor 'sass-mode)
-(add-to-list 'auto-mode-alist '("\\.scss\\'" . css-mode))
-
 ;; flyspell
 (setq flyspell-issue-message-flg nil)
 (add-hook 'ruby-mode-hook
@@ -564,7 +518,7 @@
 
 ;; Deft (for notes)
 (require 'deft)
-(setq deft-extension "txt")
+(setq deft-extensions "txt")
 (setq deft-directory "~/Dropbox/notes")
 
 ;; YAML hooks
@@ -579,36 +533,42 @@
 (add-to-list 'auto-mode-alist '("specific" . shell-script-mode))
 
 ;; Go Mode
+(require 'go-guru)
+(add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+(add-hook 'go-mode-hook 'go-eldoc-setup)
 (add-hook 'before-save-hook 'gofmt-before-save)
 (add-hook 'go-mode-hook (lambda ()
                           (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
 (add-hook 'go-mode-hook (lambda ()
                           (local-set-key (kbd "C-c i") 'go-goto-imports)))
 
+
+;; Neotree
+(global-set-key (kbd "s-\\") 'neotree-project-dir)
+
+(defun neotree-project-dir ()
+  "Open NeoTree using the git root."
+  (interactive)
+  (let ((project-dir (projectile-project-root))
+        (file-name (buffer-file-name)))
+    (neotree-toggle)
+    (if project-dir
+        (if (neo-global--window-exists-p)
+            (progn
+              (neotree-dir project-dir)
+              (neotree-find file-name)))
+      (message "Could not find git project root."))))
+
 ;; Git Gutter Mode Fringe
 (global-git-gutter+-mode 1)
-
-;; Web Mode
-(defun my-web-mode-hook ()
-  "Hooks for Web mode."
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq qweb-mode-css-indent-offset 2)
-  (add-to-list 'web-mode-comment-formats '("jsx" . "//"))
-)
-(add-hook 'web-mode-hook  'my-web-mode-hook)
-(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
-(defadvice web-mode-highlight-part (around tweak-jsx activate)
-  (if (equal web-mode-content-type "jsx")
-      (let ((web-mode-enable-part-face nil))
-        ad-do-it)
-    ad-do-it))
 
 ;; Projectile Settings
 (projectile-global-mode)
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
 ;; (setq projectile-enable-caching t)
 (setq projectile-completion-system 'helm)
+(setq projectile-switch-project-action 'neotree-projectile-action)
+
 
 ;; Expand Region http://emacsrocks.com/e09.html
 (require 'expand-region)
@@ -616,21 +576,19 @@
 
 ;; Company Mode
 (add-hook 'after-init-hook 'global-company-mode)
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-inf-ruby))
-(eval-after-load 'company
-  '(add-to-list 'company-backends 'company-emoji))
 (setq company-dabbrev-downcase nil)
-
 
 (require 'company-web-html)                          ; load company mode html backend
 (require 'company-web-slim)                          ; load company mode slim backend
+(require 'company-go)                                ; load company mode go backend
+(add-to-list 'company-backends 'company-go)
 
 (setq company-tooltip-limit 20)                      ; bigger popup window
 (setq company-tooltip-align-annotations 't)          ; align annotations to the right tooltip border
 (setq company-idle-delay .3)                         ; decrease delay before autocompletion popup shows
+(setq company-echo-delay 0)                          ; remove annoying blinking
 (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
-;; (global-set-key (kbd "C-c /") 'company-files)        ; Force complete file names on "C-c /" key
+(global-set-key (kbd "C-c /") 'company-files)        ; Force complete file names on "C-c /" key
 
 (require 'compile)
 ;; Find root directory by searching for Gemfile
@@ -665,10 +623,6 @@
   (compile (format "aws cloudformation validate-template --template-body file://%s"
                    (buffer-file-name))
            t))
-
-(add-hook 'yaml-mode-hook
-          '(lambda ()
-             (define-key yaml-mode-map "/C-c k" 'cfn-validate-file)))
 
 
 ;; Custom Theme
@@ -735,12 +689,13 @@
  '(main-line-color1 "#1e1e1e")
  '(main-line-color2 "#111111")
  '(main-line-separator-style (quote chamfer))
+ '(neo-theme (quote icons))
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (nginx-mode markdown-mode dockerfile-mode chef-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode sr-speedbar smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools ruby-refactor rspec-mode rich-minority rhtml-mode request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-haml flymake-go flymake-coffee flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web coffee-mode chruby centered-cursor-mode browse-kill-ring blank-mode auto-complete ace-jump-mode ace-jump-buffer)))
+    (all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode chef-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web chruby centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
@@ -749,6 +704,7 @@
    (quote
     (" hl-p" " mate" " MRev" " Undo-Tree" " GitGutter" " Helm" " Smrt")))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+ '(spaceline-all-the-icons-separator-type (quote none))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))

@@ -3,6 +3,8 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        mouse-drag-secondary
+        mouse-start-secondary
         smarter-move-beginning-of-line
         smex
         ))
@@ -12,6 +14,8 @@
         ccm-mwheel-scroll
         haml-electric-backspace
         ido-find-file
+        ignore
+        js-eval-defun
         mouse-set-region
         ns-copy-including-secondary
         ruby-end-space
