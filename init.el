@@ -28,9 +28,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;; Cask ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'cask "/usr/local/Cellar/cask/0.8.0/cask.el")
+(require 'cask "/usr/local/Cellar/cask/0.8.1/cask.el")
 (cask-initialize)
 (require 'pallet)
+(pallet-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;; ELPA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -344,6 +345,7 @@
 (exec-path-from-shell-copy-env "GEM_ROOT")
 (exec-path-from-shell-copy-env "RUBY_ROOT")
 (exec-path-from-shell-copy-env "RUBY_ENGINE")
+(exec-path-from-shell-copy-env "GOPATH")
 
 ; colorful shell
 ;; (require 'ansi-color)
@@ -396,7 +398,7 @@
   (setq helm-net-prefer-curl t))
 
 (setq helm-quick-update                     t ; do not display invisible candidates
-      helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+      helm-split-window-inside-p           t ; open helm buffer inside current window, not occupy whole other window
       helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
@@ -450,14 +452,6 @@
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; disable jshint since we prefer eslint checking
-(setq-default flycheck-disabled-checkers
-  (append flycheck-disabled-checkers
-    '(javascript-jshint)))
-
-;; use eslint with web-mode for jsx files
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-
 ;; disable json-jsonlist checking for json files
 (setq-default flycheck-disabled-checkers
   (append flycheck-disabled-checkers
@@ -482,9 +476,6 @@
 (add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
-(add-hook 'ruby-electric-mode-hook 'ruby-interpolation-mode)
-(add-hook 'ruby-mode-hook 'flycheck-mode)
-(add-hook 'ruby-mode-hook 'robe-mode)
 
 ;; smart-tab
 (require 'smart-tab)
@@ -563,7 +554,7 @@
 (global-git-gutter+-mode 1)
 
 ;; Projectile Settings
-(projectile-global-mode)
+(projectile-mode)
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
 ;; (setq projectile-enable-caching t)
 (setq projectile-completion-system 'helm)
@@ -628,6 +619,10 @@
 ;; Custom Theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/vendor/atom-one-dark-theme/")
 
+(use-package spaceline-all-the-icons
+  :after spaceline
+  :config (spaceline-all-the-icons-theme))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -690,12 +685,14 @@
  '(main-line-color2 "#111111")
  '(main-line-separator-style (quote chamfer))
  '(neo-theme (quote icons))
+ '(neo-window-fixed-size t)
+ '(neo-window-width 40)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode chef-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web chruby centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web chruby centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
@@ -704,7 +701,10 @@
    (quote
     (" hl-p" " mate" " MRev" " Undo-Tree" " GitGutter" " Helm" " Smrt")))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+ '(spaceline-all-the-icons-icon-set-git-ahead (quote commit))
+ '(spaceline-all-the-icons-icon-set-window-numbering (quote square))
  '(spaceline-all-the-icons-separator-type (quote none))
+ '(spaceline-all-the-icons-window-number-always-visible t)
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))

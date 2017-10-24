@@ -13,3 +13,6 @@ recentf
 rake.cache
 vendor/atom-one-dark-theme/
 vendor/crystal-mode/
+ido.last
+init.elc
+/.persistent-scratch
