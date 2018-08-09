@@ -16,3 +16,5 @@ vendor/crystal-mode/
 ido.last
 init.elc
 /.persistent-scratch
+ido.last
+init.elc

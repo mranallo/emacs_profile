@@ -17,7 +17,8 @@
 ; add directories to the load path
 ;; (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/.emacs.d/utilities")
-; (add-to-list 'load-path "~/.emacs.d/vendor")
+
+                                        ; (add-to-list 'load-path "~/.emacs.d/vendor")
 
 ; handy function to load all elisp files in a directory
 (load-file "~/.emacs.d/utilities/utilities.elc")
@@ -25,6 +26,11 @@
 (add-hook 'emacs-lisp-mode-hook '(lambda ()
   (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t))
 )
+
+
+;; Title bar
+(add-to-list 'default-frame-alist
+             '(ns-appearance . dark))
 
 ;;;;;;;;;;;;;;;;;;;;;;; Cask ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -148,6 +154,11 @@
 
 ; no toolbar
 (tool-bar-mode -1)
+
+;; nice scrolling
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
 
 ; blink cursor
 (blink-cursor-mode t)
@@ -339,7 +350,14 @@
 
 
 ;; Setting the correct $PATH
-(exec-path-from-shell-initialize)
+(setenv "PATH"
+  (concat
+   "/Users/mranallo/Code/gocode/bin" ":"
+   "/usr/local/opt/go/libexec/bin" ":"
+   (getenv "PATH")
+  )
+)
+
 (exec-path-from-shell-copy-env "GEM_HOME")
 (exec-path-from-shell-copy-env "GEM_PATH")
 (exec-path-from-shell-copy-env "GEM_ROOT")
@@ -440,7 +458,6 @@
 (browse-kill-ring-default-keybindings)
 
 ;; dired
-(require 'dired+)
 (setq dired-recursive-deletes 'top)
 (put 'dired-find-alternate-file 'disabled nil)
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
@@ -451,6 +468,7 @@
 ;; flycheck
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
+(setq-default flycheck-disabled-checkers '(chef-foodcritic))
 
 ;; disable json-jsonlist checking for json files
 (setq-default flycheck-disabled-checkers
@@ -565,6 +583,14 @@
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
+;; show the cursor when moving after big movements in the window
+(require 'beacon)
+(beacon-mode +1)
+
+;; show available keybindings after you start typing
+(require 'which-key)
+(which-key-mode +1)
+
 ;; Company Mode
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-dabbrev-downcase nil)
@@ -619,9 +645,9 @@
 ;; Custom Theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/vendor/atom-one-dark-theme/")
 
-(use-package spaceline-all-the-icons
-  :after spaceline
-  :config (spaceline-all-the-icons-theme))
+;; (use-package spaceline-all-the-icons
+;;   :after spaceline
+;;   :config (spaceline-all-the-icons-theme))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -645,8 +671,9 @@
  '(cua-read-only-cursor-color "#859900")
  '(cursor-color "#52676f")
  '(cursor-type (quote box))
- '(custom-enabled-themes (quote (atom-one-dark)))
+ '(custom-enabled-themes (quote (twilight-anti-bright)))
  '(custom-safe-themes t)
+ '(exec-path-from-shell-arguments (quote ("-l")))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
  '(foreground-color "#52676f")
@@ -692,7 +719,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web chruby centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (presentation magit-popup package-build projectile s spaceline with-editor beacon which-key helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web chruby centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
@@ -705,6 +732,7 @@
  '(spaceline-all-the-icons-icon-set-window-numbering (quote square))
  '(spaceline-all-the-icons-separator-type (quote none))
  '(spaceline-all-the-icons-window-number-always-visible t)
+ '(spaceline-info-mode t)
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -760,6 +788,9 @@
  '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight thin :height 150 :width normal))))
  '(helm-header ((t (:inherit header-line))))
  '(helm-source-header ((t (:background "gray66" :foreground "black" :weight bold :height 1.0))))
+ '(spaceline-all-the-icons-sunrise-face ((t (:inherit powerline-active2 :foreground "#f6c175"))))
+ '(spaceline-highlight-face ((t (:background "light blue" :foreground "#3E3D31" :inherit (quote mode-line)))))
+ '(spaceline-unmodified ((t (:inherit (quote mode-line) :background "light blue" :foreground "#3E3D31"))))
  '(term-color-blue ((t (:background "SteelBlue2" :foreground "SteelBlue2"))))
  '(term-color-cyan ((t (:background "PaleTurquoise3" :foreground "PaleTurquoise3"))))
  '(term-color-green ((t (:background "light green" :foreground "light green"))))
