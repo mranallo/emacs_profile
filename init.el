@@ -94,7 +94,8 @@
 ;;;;;;;;;;;;;;;;;;;; Editing Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; set-up scratch
-(setq initial-major-mode 'ruby-mode)
+(setq initial-major-mode 'text-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
 (setq initial-scratch-message "# This buffer is for notes you don't want to save, and for Ruby evaluation.
 # If you want to create a file, visit that file with C-x C-f,
 # then enter the text in that file's own buffer.")
@@ -252,13 +253,15 @@
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
 (global-set-key (kbd "s-t") 'helm-projectile)
 (global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-s") 'isearch-forward)
+;; (global-set-key (kbd "C-s") 'isearch-forward)
+(global-set-key (kbd "C-s") 'helm-occur-from-isearch)
+(global-set-key (kbd "M-f") 'helm-occur-from-isearch)
 (global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
 
 
-;; (global-set-key "\C-s" 'swiper-helm)
-;; (global-set-key "\C-r" 'swiper-helm)
+(global-set-key "\C-s" 'swiper-helm)
+(global-set-key "\C-r" 'swiper-helm)
 
 ;; If you want to be able to M-x without meta
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
@@ -354,6 +357,8 @@
   (concat
    "/Users/mranallo/Code/gocode/bin" ":"
    "/usr/local/opt/go/libexec/bin" ":"
+   "/usr/local/bin" ":"
+   "/Users/mranallo/.rbenv/shims" ":"
    (getenv "PATH")
   )
 )
@@ -468,7 +473,9 @@
 ;; flycheck
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
-(setq-default flycheck-disabled-checkers '(chef-foodcritic))
+(setq-default flycheck-disabled-checkers '(chef-foodcritic ruby-rubocop))
+(setq flycheck-ruby-rubocop-executable "/Users/mranallo/.rbenv/shims/rubocop")
+(setq flycheck-ruby-executable "/Users/mranallo/.rbenv/shims/ruby")
 
 ;; disable json-jsonlist checking for json files
 (setq-default flycheck-disabled-checkers
@@ -524,11 +531,6 @@
 (add-hook 'slim-mode-hook
           (lambda () (flyspell-prog-mode)))
 (global-set-key (kbd "<mouse-3>") 'flyspell-correct-word)
-
-;; Deft (for notes)
-(require 'deft)
-(setq deft-extensions "txt")
-(setq deft-directory "~/Dropbox/notes")
 
 ;; YAML hooks
 (autoload 'yaml-mode "yaml-mode" nil t)
@@ -637,7 +639,7 @@
 (defun cfn-validate-file ()
   ;; This calls the aws-cli to compile the current cloudformation template
   (interactive)
-  (compile (format "aws cloudformation validate-template --template-body file://%s"
+  (compile (format "cfn-lint -t %s"
                    (buffer-file-name))
            t))
 
@@ -719,7 +721,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (presentation magit-popup package-build projectile s spaceline with-editor beacon which-key helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors minimap magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig drag-stuff dired-efap dired+ deft company-web chruby centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (flyspell-lazy ess-smart-underscore swiper-helm avy-menu rbenv presentation magit-popup package-build projectile s spaceline with-editor beacon which-key helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
