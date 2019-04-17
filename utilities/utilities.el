@@ -64,7 +64,7 @@
 ;; Comment code source: http://paste.lisp.org/display/42657
 (defun comment-or-uncomment-line (&optional lines)
   "Comment current line. Argument gives the number of lines
-			forward to comment"
+      forward to comment"
   (interactive "P")
   (comment-or-uncomment-region
    (line-beginning-position)
@@ -72,20 +72,20 @@
 
 (defun comment-or-uncomment-region-or-line (&optional lines)
   "If the line or region is not a comment, comments region
-			if mark is active, line otherwise. If the line or region
-			is a comment, uncomment."
+      if mark is active, line otherwise. If the line or region
+      is a comment, uncomment."
   (interactive "P")
   (if mark-active
       (if (< (mark) (point))
-				  (comment-or-uncomment-region (mark) (point))
-				(comment-or-uncomment-region (point) (mark))
-				)
+          (comment-or-uncomment-region (mark) (point))
+        (comment-or-uncomment-region (point) (mark))
+        )
     (comment-or-uncomment-line lines)))
 
 (defun duplicate-current-line-or-region (arg)
   "Duplicates the current line or region ARG times.
-			If there's no region, the current line will be duplicated. However, if
-			there's a region, all lines that region covers will be duplicated."
+      If there's no region, the current line will be duplicated. However, if
+      there's a region, all lines that region covers will be duplicated."
   (interactive "p")
   (let (beg end (origin (point)))
     (if (and mark-active (> (point) (mark)))
@@ -267,6 +267,20 @@ point reaches the beginning or end of the buffer, stop there."
       (minimap-create)
     (minimap-kill)))
 
+;; cloudformation-mode
+(defmacro after! (feature &rest forms)
+  "A smart wrapper around `with-eval-after-load'. Supresses warnings during
+compilation."
+  (declare (indent defun) (debug t))
+  `(,(if (or (not (bound-and-true-p byte-compile-current-file))
+             (if (symbolp feature)
+                 (require feature nil :no-error)
+               (load feature :no-message :no-error)))
+         #'progn
+       #'with-no-warnings)
+    (with-eval-after-load ',feature ,@forms)))
+
+
 ;; https://gist.github.com/cofi/3013327
 (defun cofi/helm-flyspell-correct ()
   "Use helm for flyspell correction.
@@ -317,6 +331,6 @@ Adapted from `flyspell-correct-word-before-point'."
                                                                                   "Default"))
                                                  :must-match t
                                                  :alistp t)
-                                 
+
                                  poss word cursor-location start end opoint)))
           (ispell-pdict-save t)))))

@@ -258,7 +258,7 @@
 (global-set-key (kbd "M-f") 'helm-occur-from-isearch)
 (global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
-
+(global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Notes")))
 
 (global-set-key "\C-s" 'swiper-helm)
 (global-set-key "\C-r" 'swiper-helm)
@@ -530,6 +530,8 @@
           (lambda () (flyspell-prog-mode)))
 (add-hook 'slim-mode-hook
           (lambda () (flyspell-prog-mode)))
+(add-hook 'cfn-mode-hook
+          (lambda () (flyspell-prog-mode)))
 (global-set-key (kbd "<mouse-3>") 'flyspell-correct-word)
 
 ;; YAML hooks
@@ -604,7 +606,7 @@
 
 (setq company-tooltip-limit 20)                      ; bigger popup window
 (setq company-tooltip-align-annotations 't)          ; align annotations to the right tooltip border
-(setq company-idle-delay .3)                         ; decrease delay before autocompletion popup shows
+(setq company-idle-delay 0)                         ; decrease delay before autocompletion popup shows
 (setq company-echo-delay 0)                          ; remove annoying blinking
 (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
 (global-set-key (kbd "C-c /") 'company-files)        ; Force complete file names on "C-c /" key
@@ -620,20 +622,9 @@
      if (equal d root)
      return nil)))
 
-(defun rspec-compile-file ()
-  (interactive)
-  (compile (format "cd %s;pco box rspec %s"
-                   (get-closest-gemfile-root)
-                   (file-relative-name (buffer-file-name) (get-closest-gemfile-root))
-                   ) t))
-
-(defun rspec-compile-on-line ()
-  (interactive)
-  (compile (format "cd %s;pco box rspec %s:%s"
-                   (get-closest-gemfile-root)
-                   (file-relative-name (buffer-file-name) (get-closest-gemfile-root))
-                   (line-number-at-pos)
-                   ) t))
+;; Deft Mode
+(setq deft-extensions '("txt"))
+(setq deft-directory "/Users/mranallo/Library/Mobile\ Documents/iCloud~co~noteplan~NotePlan/Documents/Notes/")
 
 ;; Custom validate for CloudFormation
 (defun cfn-validate-file ()
@@ -642,6 +633,30 @@
   (compile (format "cfn-lint -t %s"
                    (buffer-file-name))
            t))
+
+(define-derived-mode cfn-mode yaml-mode
+  "Cloudformation"
+  "Cloudformation template mode.")
+
+(add-to-list 'auto-mode-alist '(".yml\\'" . cfn-mode))
+(after! flycheck
+  (flycheck-define-checker cfn-lint
+    "A Cloudformation linter using cfn-python-lint.
+
+See URL 'https://github.com/awslabs/cfn-python-lint'."
+    :command ("cfn-lint" "-f" "parseable" source)
+    :error-patterns (
+                     (warning line-start (file-name) ":" line ":" column
+                              ":" (one-or-more digit) ":" (one-or-more digit) ":"
+                              (id "W" (one-or-more digit)) ":" (message) line-end)
+                     (error line-start (file-name) ":" line ":" column
+                            ":" (one-or-more digit) ":" (one-or-more digit) ":"
+                            (id "E" (one-or-more digit)) ":" (message) line-end)
+                     )
+    :modes (cfn-mode)
+    )
+    (add-to-list 'flycheck-checkers 'cfn-lint)
+  )
 
 
 ;; Custom Theme
@@ -721,7 +736,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (flyspell-lazy ess-smart-underscore swiper-helm avy-menu rbenv presentation magit-popup package-build projectile s spaceline with-editor beacon which-key helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore swiper-helm avy-menu rbenv presentation magit-popup package-build projectile s spaceline with-editor beacon which-key helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
