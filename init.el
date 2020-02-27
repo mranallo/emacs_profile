@@ -1,4 +1,4 @@
-; enable Common Lisp support
+enable Common Lisp support
 ;(require 'cl)
 
 ; some modes need to call stuff on the exec-path
@@ -120,7 +120,6 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 ; line numbering
-(require 'linum)
 (global-linum-mode)
 (setq linum-format " %d ") ; space after line number
 
@@ -247,7 +246,7 @@
 ;; File finding
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
 (global-set-key (kbd "C-x C-M-f") 'find-file-in-project)
-(global-set-key (kbd "C-x f") 'ido-find-file)
+(global-set-key (kbd "C-x f") 'helm-find-files)
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
@@ -258,9 +257,7 @@
 (global-set-key (kbd "M-f") 'helm-occur-from-isearch)
 (global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
-(global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Notes")))
-
-(global-set-key "\C-s" 'swiper-helm)
+;; (global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Notes")))
 (global-set-key "\C-r" 'swiper-helm)
 
 ;; If you want to be able to M-x without meta
@@ -379,6 +376,9 @@
 ;; (add-hook 'eshell-mode-hook
   ;; '(lambda nil (local-set-key "\C-u" 'eshell-kill-input)))
 
+;; Company tab-nine
+(require 'company-tabnine)
+(add-to-list 'company-backends #'company-tabnine)
 
 ;; Magit settings
 ;; full screen magit-status
@@ -401,7 +401,6 @@
 
 ;; Hide minor modes
 (rich-minority-mode 1)
-
 
 ;; Helm Config
 (require 'helm-config)
@@ -491,16 +490,9 @@
             (make-local-variable 'js-indent-level)
             (setq js-indent-level 2)))
 
-;; Ruby
-(autoload 'ruby-mode "ruby-mode" "Mode for editing ruby source files" t)
-(autoload 'run-ruby "inf-ruby" "Run an inferior Ruby process")
-(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
+;; Ruby stuff
+(add-to-list 'auto-mode-alist
+             '("\\(?:\\.rb\\|ru\\|rake\\|thor\\|jbuilder\\|gemspec\\|podspec\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'" . enh-ruby-mode))
 
 ;; smart-tab
 (require 'smart-tab)
@@ -526,7 +518,7 @@
 
 ;; flyspell
 (setq flyspell-issue-message-flg nil)
-(add-hook 'ruby-mode-hook
+(add-hook 'enh-ruby-mode-hook
           (lambda () (flyspell-prog-mode)))
 (add-hook 'slim-mode-hook
           (lambda () (flyspell-prog-mode)))
@@ -558,6 +550,7 @@
 
 ;; Neotree
 (global-set-key (kbd "s-\\") 'neotree-project-dir)
+(doom-themes-neotree-config)
 
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
@@ -571,6 +564,13 @@
               (neotree-dir project-dir)
               (neotree-find file-name)))
       (message "Could not find git project root."))))
+
+;; SolaireMode
+(solaire-global-mode)
+(solaire-mode-swap-bg)
+
+;; DoomModeline
+(doom-modeline-mode)
 
 ;; Git Gutter Mode Fringe
 (global-git-gutter+-mode 1)
@@ -623,8 +623,9 @@
      return nil)))
 
 ;; Deft Mode
+(global-set-key (kbd "C-x n") 'deft)
 (setq deft-extensions '("txt"))
-(setq deft-directory "/Users/mranallo/Library/Mobile\ Documents/iCloud~co~noteplan~NotePlan/Documents/Notes/")
+(setq deft-directory "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Notes/")
 
 ;; Custom validate for CloudFormation
 (defun cfn-validate-file ()
@@ -680,6 +681,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
  '(background-mode light)
+ '(beacon-color "#d33682")
  '(column-number-mode t)
  '(compilation-message-face (quote default))
  '(cua-global-mark-cursor-color "#2aa198")
@@ -688,12 +690,15 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(cua-read-only-cursor-color "#859900")
  '(cursor-color "#52676f")
  '(cursor-type (quote box))
- '(custom-enabled-themes (quote (twilight-anti-bright)))
+ '(custom-enabled-themes (quote (doom-nord-light)))
  '(custom-safe-themes t)
+ '(deft-auto-save-interval 0.0)
  '(exec-path-from-shell-arguments (quote ("-l")))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
+ '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
  '(foreground-color "#52676f")
+ '(frame-background-mode (quote dark))
  '(fringe-mode 4 nil (fringe))
  '(global-centered-cursor-mode t)
  '(global-linum-mode t)
@@ -721,6 +726,23 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
    (quote
     ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
  '(hl-sexp-background-color "#efebe9")
+ '(hl-todo-keyword-faces
+   (quote
+    (("TODO" . "#dc752f")
+     ("NEXT" . "#dc752f")
+     ("THEM" . "#2d9574")
+     ("PROG" . "#3a81c3")
+     ("OKAY" . "#3a81c3")
+     ("DONT" . "#f2241f")
+     ("FAIL" . "#f2241f")
+     ("DONE" . "#42ae2c")
+     ("NOTE" . "#b1951d")
+     ("KLUDGE" . "#b1951d")
+     ("HACK" . "#b1951d")
+     ("TEMP" . "#b1951d")
+     ("FIXME" . "#dc752f")
+     ("XXX+" . "#dc752f")
+     ("\\?\\?\\?+" . "#dc752f"))))
  '(json-reformat:indent-width 2)
  '(linum-format " %d ")
  '(magit-diff-use-overlays nil)
@@ -736,7 +758,8 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore swiper-helm avy-menu rbenv presentation magit-popup package-build projectile s spaceline with-editor beacon which-key helm use-package use-package-chords all-the-icons-dired neotree spaceline-all-the-icons go-eldoc go-guru company company-go go-mode groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized yasnippet yaml-mode web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme tree-mode smartparens smart-tab slim-mode simple-mode-line sass-mode ruby-tools rspec-mode rich-minority request projectile-rails pos-tip persistent-scratch pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-robe helm-projectile helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region exec-path-from-shell es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore swiper-helm rbenv presentation magit-popup package-build projectile s spaceline beacon which-key helm use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+ '(pdf-view-midnight-colors (quote ("#655370" . "#fbf8ef")))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
@@ -745,10 +768,17 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
    (quote
     (" hl-p" " mate" " MRev" " Undo-Tree" " GitGutter" " Helm" " Smrt")))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+ '(spaceline-all-the-icons-clock-always-visible nil)
+ '(spaceline-all-the-icons-eyebrowse-display-name t)
+ '(spaceline-all-the-icons-hide-long-buffer-path t)
  '(spaceline-all-the-icons-icon-set-git-ahead (quote commit))
+ '(spaceline-all-the-icons-icon-set-modified (quote chain))
+ '(spaceline-all-the-icons-icon-set-vc-icon-git (quote git-name))
  '(spaceline-all-the-icons-icon-set-window-numbering (quote square))
- '(spaceline-all-the-icons-separator-type (quote none))
+ '(spaceline-all-the-icons-primary-separator "|")
+ '(spaceline-all-the-icons-separator-type (quote arrow))
  '(spaceline-all-the-icons-window-number-always-visible t)
+ '(spaceline-buffer-id-max-length 25)
  '(spaceline-info-mode t)
  '(syslog-debug-face
    (quote
@@ -802,7 +832,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Source Code Pro" :foundry "nil" :slant normal :weight thin :height 150 :width normal))))
+ '(default ((t (:family "JetBrains Mono" :foundry "nil" :slant normal :weight thin :height 130 :width normal))))
  '(helm-header ((t (:inherit header-line))))
  '(helm-source-header ((t (:background "gray66" :foreground "black" :weight bold :height 1.0))))
  '(spaceline-all-the-icons-sunrise-face ((t (:inherit powerline-active2 :foreground "#f6c175"))))
