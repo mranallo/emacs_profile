@@ -1,4 +1,4 @@
-enable Common Lisp support
+;; enable Common Lisp support
 ;(require 'cl)
 
 ; some modes need to call stuff on the exec-path
@@ -252,8 +252,7 @@ enable Common Lisp support
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
 (global-set-key (kbd "s-t") 'helm-projectile)
 (global-set-key (kbd "C-x b") 'helm-mini)
-;; (global-set-key (kbd "C-s") 'isearch-forward)
-(global-set-key (kbd "C-s") 'helm-occur-from-isearch)
+(global-set-key (kbd "C-s") 'helm-occur)
 (global-set-key (kbd "M-f") 'helm-occur-from-isearch)
 (global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
@@ -340,10 +339,6 @@ enable Common Lisp support
 ;; (setq eshell-scroll-to-bottom-on-output t)
 ;; (setq eshell-scroll-show-maximum-output t)
 
-(add-hook 'term-mode-hook (lambda()
-        (setq yas-dont-activate-functions t)))
-
-
 ;; Emoji support
 (if window-system
     (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend))
@@ -415,6 +410,10 @@ enable Common Lisp support
 (global-set-key (kbd "C-x m") 'helm-M-x)
 (global-set-key (kbd "C-x C-m") 'helm-M-x)
 (global-set-key (kbd "M-X") 'helm-M-x)
+
+(with-eval-after-load 'helm
+  (define-key helm-map (kbd "<left>") 'helm-previous-source)
+  (define-key helm-map (kbd "<right>") 'helm-next-source))
 
 (when (executable-find "curl")
   (setq helm-net-prefer-curl t))
@@ -491,8 +490,10 @@ enable Common Lisp support
             (setq js-indent-level 2)))
 
 ;; Ruby stuff
+(autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
 (add-to-list 'auto-mode-alist
              '("\\(?:\\.rb\\|ru\\|rake\\|thor\\|jbuilder\\|gemspec\\|podspec\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'" . enh-ruby-mode))
+(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 
 ;; smart-tab
 (require 'smart-tab)
@@ -500,13 +501,6 @@ enable Common Lisp support
 ;;              'yas/hippie-try-expand) ;put yasnippet in hippie-expansion list
 (global-smart-tab-mode 1)
 (setq smart-tab-using-hippie-expand t)
-
-;; YA Snippets
-(require 'yasnippet)
-(yas-global-mode 1)
-(setq yas-prompt-functions '(yas/ido-prompt
-                            yas/dropdown-prompt
-                            yas/completing-prompt))
 
 ;; Smartparens highlight
 (show-smartparens-global-mode +1)
@@ -533,7 +527,7 @@ enable Common Lisp support
 
 ;; Shell mode
 (add-to-list 'auto-mode-alist '("aliases" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("config" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\config$" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("env" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("specific" . shell-script-mode))
 
@@ -547,6 +541,41 @@ enable Common Lisp support
 (add-hook 'go-mode-hook (lambda ()
                           (local-set-key (kbd "C-c i") 'go-goto-imports)))
 
+
+;; Popwin
+(use-package popwin
+  :config
+  (progn
+    (setq popwin:special-display-config nil)
+    (push '("*Backtrace*"
+            :dedicated t :position bottom :stick t :noselect nil :height 0.2)
+          popwin:special-display-config)
+    (push '("*compilation*"
+            :dedicated t :position bottom :stick t :noselect t   :height 0.2)
+          popwin:special-display-config)
+    (push '("*Compile-Log*"
+            :dedicated t :position bottom :stick t :noselect t   :height 0.2)
+          popwin:special-display-config)
+    (push '("*Flycheck errors*"
+            :dedicated t :position bottom :stick t :noselect t   :height 0.2)
+          popwin:special-display-config)
+    (push '("*Help*"
+            :dedicated t :position bottom :stick t :noselect nil :height 0.2)
+          popwin:special-display-config)
+    (push '("*Shell Command Output*"
+            :dedicated t :position bottom :stick t :noselect nil :height 0.2)
+          popwin:special-display-config)
+    (push '(" *undo-tree*"
+            :dedicated t :position bottom :stick t :noselect nil :height 0.2)
+          popwin:special-display-config)
+    (push '("*Warnings*"
+            :dedicated t :position bottom :stick t :noselect nil :height 0.2)
+          popwin:special-display-config)
+    (push '("^\\*Man .*\\*$"
+            :regexp t    :position bottom :stick t :noselect nil :height 0.2)
+            popwin:special-display-config)
+    (popwin-mode 1)))
+(global-set-key (kbd "C-z") popwin:keymap)
 
 ;; Neotree
 (global-set-key (kbd "s-\\") 'neotree-project-dir)
@@ -566,8 +595,13 @@ enable Common Lisp support
       (message "Could not find git project root."))))
 
 ;; SolaireMode
-(solaire-global-mode)
-(solaire-mode-swap-bg)
+(use-package solaire-mode
+  :hook
+  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+  (minibuffer-setup . solaire-mode-in-minibuffer)
+  :config
+  (solaire-global-mode +1)
+  (solaire-mode-swap-bg))
 
 ;; DoomModeline
 (doom-modeline-mode)
@@ -639,7 +673,7 @@ enable Common Lisp support
   "Cloudformation"
   "Cloudformation template mode.")
 
-(add-to-list 'auto-mode-alist '(".yml\\'" . cfn-mode))
+(add-to-list 'auto-mode-alist '("infrastructure/.*\\.yml$" . cfn-mode))
 (after! flycheck
   (flycheck-define-checker cfn-lint
     "A Cloudformation linter using cfn-python-lint.
@@ -676,7 +710,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
-   ["black" "red3" "green3" "yellow3" "DeepSkyBlue2" "magenta3" "cyan3" "gray90"])
+   ["#D8DEE9" "red3" "green3" "yellow3" "DeepSkyBlue2" "magenta3" "cyan3" "gray90"])
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
@@ -758,7 +792,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore swiper-helm rbenv presentation magit-popup package-build projectile s spaceline beacon which-key helm use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore swiper-helm rbenv presentation magit-popup package-build projectile s spaceline beacon which-key helm use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pdf-view-midnight-colors (quote ("#655370" . "#fbf8ef")))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")

@@ -5,6 +5,7 @@
 
 (depends-on "ace-jump-buffer")
 (depends-on "ace-jump-mode")
+(depends-on "ag")
 (depends-on "all-the-icons")
 (depends-on "all-the-icons-dired")
 (depends-on "async")
@@ -89,6 +90,7 @@
 (depends-on "persistent-scratch")
 (depends-on "pkg-info")
 (depends-on "popup")
+(depends-on "popwin")
 (depends-on "pos-tip")
 (depends-on "powerline")
 (depends-on "presentation")

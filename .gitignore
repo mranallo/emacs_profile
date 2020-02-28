@@ -21,3 +21,5 @@ init.elc
 places
 network-security.data
 abbrev_defs
+forge-database.sqlite
+transient/history.el
