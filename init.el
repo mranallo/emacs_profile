@@ -194,18 +194,8 @@
 (global-set-key (kbd "C-x c") 'execute-extended-command)
 (global-set-key (kbd "C-x m") 'execute-extended-command)
 
-
-; search with ag
-(setq helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
-(setq helm-ag-insert-at-point 'symbol)
-
-(defun projectile-helm-ag ()
-  (interactive)
-  (helm-do-ag (projectile-project-root)))
-
 ;; (setq ag-highlight-search t)
-(global-set-key (kbd "s-F") 'projectile-helm-ag)
-;; (global-set-key (kbd "H-f") 'ag-regexp-project-at-point)
+(global-set-key (kbd "s-F") 'counsel-projectile-ag)
 
 ;; goto line
 (global-set-key (kbd "C-l") 'goto-line)
@@ -246,18 +236,18 @@
 ;; File finding
 (global-set-key (kbd "C-x M-f") 'ido-find-file-other-window)
 (global-set-key (kbd "C-x C-M-f") 'find-file-in-project)
-(global-set-key (kbd "C-x f") 'helm-find-files)
+(global-set-key (kbd "C-x f") 'counsel-find-file)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-c r") 'revert-buffer)
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
-(global-set-key (kbd "s-t") 'helm-projectile)
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-s") 'helm-occur)
-(global-set-key (kbd "M-f") 'helm-occur-from-isearch)
+(global-set-key (kbd "s-t") 'counsel-projectile)
+(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "M-f") 'swiper)
 (global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
 ;; (global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Notes")))
-(global-set-key "\C-r" 'swiper-helm)
 
 ;; If you want to be able to M-x without meta
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
@@ -314,10 +304,9 @@
 (key-chord-define-global "jk" 'avy-goto-char)
 (key-chord-define-global "uu" 'undo-tree-visualize)
 (key-chord-define-global "xx" 'execute-extended-command)
-(key-chord-define-global "yy" 'helm-show-kill-ring)
-(key-chord-define-global "bb" 'helm-mini)
+(key-chord-define-global "yy" 'counsel-yank-pop)
+(key-chord-define-global "bb" 'ivy-switch-buffer)
 (key-chord-define-global "ww" 'ace-window)
-(key-chord-define-global "kk" 'cfn-validate-file)
 
 (key-chord-mode +1)
 
@@ -394,40 +383,19 @@
 (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
 (setq magit-last-seen-setup-instructions "1.4.0")
 
-;; Hide minor modes
-(rich-minority-mode 1)
+;; Ivy config
+(all-the-icons-ivy-rich-mode 1)
+(ivy-rich-mode 1)
+(define-key ivy-minibuffer-map (kbd "<return>") #'ivy-alt-done)
 
-;; Helm Config
-(require 'helm-config)
 
-;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x m") 'counsel-M-x)
+(global-set-key (kbd "C-x C-m") 'counsel-M-x)
+(global-set-key (kbd "M-X") 'counsel-M-x)
 
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x m") 'helm-M-x)
-(global-set-key (kbd "C-x C-m") 'helm-M-x)
-(global-set-key (kbd "M-X") 'helm-M-x)
-
-(with-eval-after-load 'helm
-  (define-key helm-map (kbd "<left>") 'helm-previous-source)
-  (define-key helm-map (kbd "<right>") 'helm-next-source))
-
-(when (executable-find "curl")
-  (setq helm-net-prefer-curl t))
-
-(setq helm-quick-update                     t ; do not display invisible candidates
-      helm-split-window-inside-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
-
-(helm-mode 1)
-(helm-autoresize-mode 1)
+; search with ag
+(setq counsel-ag-base-command "ag --nocolor --nogroup --ignore-case")
 
 ;; Persistant Scratch
 (persistent-scratch-setup-default)
@@ -559,6 +527,9 @@
     (push '("*Flycheck errors*"
             :dedicated t :position bottom :stick t :noselect t   :height 0.2)
           popwin:special-display-config)
+    (push '("^\\*docker-build-output:.*\\*$"
+            :regexp t :dedicated t :position bottom :stick t :noselect t   :height 0.2  :tail t)
+          popwin:special-display-config)
     (push '("*Help*"
             :dedicated t :position bottom :stick t :noselect nil :height 0.2)
           popwin:special-display-config)
@@ -594,6 +565,9 @@
               (neotree-find file-name)))
       (message "Could not find git project root."))))
 
+;; posframe-company
+;; (company-posframe-mode 1)
+
 ;; SolaireMode
 (use-package solaire-mode
   :hook
@@ -613,7 +587,7 @@
 (projectile-mode)
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
 ;; (setq projectile-enable-caching t)
-(setq projectile-completion-system 'helm)
+(setq projectile-completion-system 'ivy)
 (setq projectile-switch-project-action 'neotree-projectile-action)
 
 
@@ -792,7 +766,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore swiper-helm rbenv presentation magit-popup package-build projectile s spaceline beacon which-key helm use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex helm-ag github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pdf-view-midnight-colors (quote ("#655370" . "#fbf8ef")))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
