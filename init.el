@@ -34,7 +34,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;; Cask ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'cask "/usr/local/Cellar/cask/0.8.1/cask.el")
+(require 'cask "/usr/local/share/emacs/site-lisp/cask/cask.el")
 (cask-initialize)
 (require 'pallet)
 (pallet-mode t)
@@ -117,14 +117,11 @@
 ; whitespace
 ;; (global-whitespace-mode t)
 ;; (setq show-trailing-whitespace t)
-(add-hook 'before-save-hook 'whitespace-cleanup)
+;; (add-hook 'before-save-hook 'whitespace-cleanup)
 
-; line numbering
-(global-linum-mode)
-(setq linum-format " %d ") ; space after line number
-
-;; Set modes to turn off linum
-(require 'linum-off)
+;; line numbering
+;; (global-display-line-numbers-mode 1)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ; show column number in bar
 (column-number-mode t)
@@ -174,6 +171,10 @@
 
 ;; Cursor type
 (setq-default cursor-type 'box)
+
+;; Titlebar 
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . light))
 
 ;;;;;;;;;;;;;;;;;;;; Keys ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -242,12 +243,12 @@
 (global-set-key (kbd "C-c r") 'revert-buffer)
 (global-set-key (kbd "M-`") 'file-cache-minibuffer-complete)
 (global-set-key (kbd "s-t") 'counsel-projectile)
-(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+(global-set-key (kbd "C-x b") 'counsel-switch-buffer)
 (global-set-key (kbd "C-s") 'swiper)
 (global-set-key (kbd "M-f") 'swiper)
 (global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
-;; (global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Notes")))
+(global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Calendar")))
 
 ;; If you want to be able to M-x without meta
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
@@ -305,8 +306,10 @@
 (key-chord-define-global "uu" 'undo-tree-visualize)
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-define-global "yy" 'counsel-yank-pop)
-(key-chord-define-global "bb" 'ivy-switch-buffer)
+(key-chord-define-global "bb" 'counsel-switch-buffer)
+(key-chord-define-global "rr" 'counsel-buffer-or-recentf)
 (key-chord-define-global "ww" 'ace-window)
+(key-chord-define-global "dd" 'dumb-jump-go)
 
 (key-chord-mode +1)
 
@@ -350,6 +353,7 @@
 (exec-path-from-shell-copy-env "RUBY_ROOT")
 (exec-path-from-shell-copy-env "RUBY_ENGINE")
 (exec-path-from-shell-copy-env "GOPATH")
+(exec-path-from-shell-initialize)
 
 ; colorful shell
 ;; (require 'ansi-color)
@@ -363,6 +367,13 @@
 ;; Company tab-nine
 (require 'company-tabnine)
 (add-to-list 'company-backends #'company-tabnine)
+
+;; Posframe
+(company-posframe-mode 1)
+(flycheck-posframe-mode 1)
+
+;; Pos-Tip
+
 
 ;; Magit settings
 ;; full screen magit-status
@@ -492,12 +503,31 @@
 (autoload 'yaml-mode "yaml-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-hook 'yaml-mode-hook #'display-line-numbers-mode)
+
 
 ;; Shell mode
 (add-to-list 'auto-mode-alist '("aliases" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\config$" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("env" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("specific" . shell-script-mode))
+
+;; Dumb Jump
+(use-package dumb-jump
+  :config (setq dumb-jump-selector 'ivy)
+  :ensure)
+
+(defhydra dumb-jump-hydra (:color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back"))
+
+(global-set-key (kbd "M-j") 'dumb-jump-hydra/body)
 
 ;; Go Mode
 (require 'go-guru)
@@ -508,7 +538,6 @@
                           (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
 (add-hook 'go-mode-hook (lambda ()
                           (local-set-key (kbd "C-c i") 'go-goto-imports)))
-
 
 ;; Popwin
 (use-package popwin
@@ -564,9 +593,6 @@
               (neotree-dir project-dir)
               (neotree-find file-name)))
       (message "Could not find git project root."))))
-
-;; posframe-company
-;; (company-posframe-mode 1)
 
 ;; SolaireMode
 (use-package solaire-mode
@@ -680,7 +706,6 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(Linum-format "%7i ")
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
@@ -691,6 +716,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(background-mode light)
  '(beacon-color "#d33682")
  '(column-number-mode t)
+ '(company-quickhelp-use-propertized-text t)
  '(compilation-message-face (quote default))
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#657b83")
@@ -709,7 +735,6 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(frame-background-mode (quote dark))
  '(fringe-mode 4 nil (fringe))
  '(global-centered-cursor-mode t)
- '(global-linum-mode t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
@@ -752,7 +777,6 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f"))))
  '(json-reformat:indent-width 2)
- '(linum-format " %d ")
  '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
  '(main-line-color1 "#1e1e1e")
@@ -766,10 +790,8 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pdf-view-midnight-colors (quote ("#655370" . "#fbf8ef")))
- '(pos-tip-background-color "#eee8d5")
- '(pos-tip-foreground-color "#586e75")
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
  '(rm-blacklist
@@ -851,5 +873,6 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(term-color-green ((t (:background "light green" :foreground "light green"))))
  '(term-color-magenta ((t (:background "pink1" :foreground "pink1"))))
  '(term-color-red ((t (:background "indian red" :foreground "indian red"))))
- '(term-color-yellow ((t (:background "LightYellow3" :foreground "LightYellow3")))))
+ '(term-color-yellow ((t (:background "LightYellow3" :foreground "LightYellow3"))))
+ '(tooltip ((t (:background "#C2D0E7" :foreground "#3B4252" :height 130 :family "JetBrains Mono")))))
 (put 'upcase-region 'disabled nil)
