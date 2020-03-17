@@ -128,7 +128,7 @@
 (defun vendor (library)
   (let* ((file (symbol-name library))
          (normal (concat "~/.emacs.d/vendor/" file))
-         (suffix (concat normal ".el")))
+         (suffix (concat normal "\\.el$")))
     (cond
      ((file-directory-p normal)
       (add-to-list 'load-path normal)
@@ -140,7 +140,6 @@
       (require library)))))
 
 ;; Commands
-
 (defun esk-eval-and-replace ()
   "Replace the preceding sexp with its value."
   (interactive)
@@ -334,3 +333,21 @@ Adapted from `flyspell-correct-word-before-point'."
 
                                  poss word cursor-location start end opoint)))
           (ispell-pdict-save t)))))
+
+;; https://gist.github.com/gregsexton/dd2d6c304d06fc3e6833
+(defun company-eshell-history (command &optional arg &rest ignored)
+  (interactive (list 'interactive))
+  (cl-case command
+    (interactive (company-begin-backend 'company-eshell-history))
+    (prefix (and (eq major-mode 'eshell-mode)
+                 (let ((word (company-grab-word)))
+                   (save-excursion
+                     (eshell-bol)
+                     (and (looking-at-p (s-concat word "$")) word)))))
+    (candidates (remove-duplicates
+                 (->> (ring-elements eshell-history-ring)
+                      (remove-if-not (lambda (item) (s-prefix-p arg item)))
+                      (mapcar 's-trim))
+                 :test 'string=))
+    (sorted t)))
+

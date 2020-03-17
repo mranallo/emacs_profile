@@ -1,24 +1,16 @@
-;; enable Common Lisp support
-;(require 'cl)
-
-; some modes need to call stuff on the exec-path
-
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
 
-(push "/usr/local/bin" exec-path)
-
 ; Start in server mode
 (server-start)
 
 ; add directories to the load path
 ;; (add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path "~/.emacs.d/utilities")
-
-                                        ; (add-to-list 'load-path "~/.emacs.d/vendor")
+;; (add-to-list 'load-path "~/.emacs.d/utilities")
+(add-to-list 'load-path "~/.emacs.d/vendor")
 
 ; handy function to load all elisp files in a directory
 (load-file "~/.emacs.d/utilities/utilities.elc")
@@ -310,16 +302,17 @@
 (key-chord-define-global "rr" 'counsel-buffer-or-recentf)
 (key-chord-define-global "ww" 'ace-window)
 (key-chord-define-global "dd" 'dumb-jump-go)
+(key-chord-define-global "``" 'eshell-toggle)
 
 (key-chord-mode +1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; Shell Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; more bash-like autocomplete
-;; (setq eshell-cmpl-cycle-completions nil)
+(setq eshell-cmpl-cycle-completions nil)
 
 ; automatically save history
-;; (setq eshell-save-history-on-exit t)
+(setq eshell-save-history-on-exit t)
 
 ; ignore version control directories when autocompleting
 ;; (setq eshell-cmpl-dir-ignore "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\)/\\'")
@@ -335,7 +328,6 @@
 (if window-system
     (set-fontset-font t 'unicode "Apple Color Emoji" nil 'prepend))
 
-
 ;; Setting the correct $PATH
 (setenv "PATH"
   (concat
@@ -345,7 +337,9 @@
    "/Users/mranallo/.rbenv/shims" ":"
    (getenv "PATH")
   )
-)
+  )
+
+(setenv "PAGER" "cat")
 
 (exec-path-from-shell-copy-env "GEM_HOME")
 (exec-path-from-shell-copy-env "GEM_PATH")
@@ -355,24 +349,26 @@
 (exec-path-from-shell-copy-env "GOPATH")
 (exec-path-from-shell-initialize)
 
-; colorful shell
-;; (require 'ansi-color)
-;; (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;; Choose which eshell-funcs to enable
+;; (setq eshell-funcs (list esh-dir esh-git esh-clock esh-num))
 
 ; escape the shell
 ;; (add-hook 'eshell-mode-hook
-  ;; '(lambda nil (local-set-key "\C-u" 'eshell-kill-input)))
+;; '(lambda nil (local-set-key "\C-u" 'eshell-kill-input)))
 
-;; Company tab-nine
-(require 'company-tabnine)
-(add-to-list 'company-backends #'company-tabnine)
+(add-hook 'eshell-mode-hook (lambda ()
+                              (add-to-list 'eshell-visual-commands "ssh")
+                              (add-to-list 'eshell-visual-commands "tail")
+                              (add-to-list 'eshell-visual-commands "top")))
+;; eshell toggle
+(global-set-key (kbd "s-`") 'eshell-toggle)
 
-;; Posframe
-(company-posframe-mode 1)
-(flycheck-posframe-mode 1)
+(load-file "~/.emacs.d/vendor/esh-custom/esh-custom.elc")
+;; Enable the new eshell prompt
+(setq eshell-prompt-function 'esh-prompt-func)
 
-;; Pos-Tip
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;; Magit settings
@@ -420,10 +416,6 @@
 
 ;; pianobar
 (autoload 'pianobar "pianobar" nil t)
-
-;; Keyboard Shortcuts
-(vendor 'textmate)
-(textmate-mode)
 
 ;; Winner mode
 (winner-mode 1)
@@ -484,10 +476,6 @@
 ;; Smartparens highlight
 (show-smartparens-global-mode +1)
 (require 'smartparens-ruby)
-
-;; Crystal Mode
-(vendor 'crystal-mode)
-(vendor 'crystal-flycheck)
 
 ;; flyspell
 (setq flyspell-issue-message-flg nil)
@@ -636,14 +624,25 @@
 (require 'company-web-html)                          ; load company mode html backend
 (require 'company-web-slim)                          ; load company mode slim backend
 (require 'company-go)                                ; load company mode go backend
+(require 'company-tabnine)                           ; Company tab-nine
+
 (add-to-list 'company-backends 'company-go)
+(add-to-list 'company-backends 'company-tabnine)
+
+(add-hook 'eshell-mode-hook
+      (lambda ()
+        (set (make-local-variable 'company-backends)
+             '((company-eshell-history)))))
 
 (setq company-tooltip-limit 20)                      ; bigger popup window
 (setq company-tooltip-align-annotations 't)          ; align annotations to the right tooltip border
-(setq company-idle-delay 0)                         ; decrease delay before autocompletion popup shows
+(setq company-idle-delay 0)                          ; decrease delay before autocompletion popup shows
 (setq company-echo-delay 0)                          ; remove annoying blinking
 (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
 (global-set-key (kbd "C-c /") 'company-files)        ; Force complete file names on "C-c /" key
+
+
+
 
 (require 'compile)
 ;; Find root directory by searching for Gemfile
@@ -693,14 +692,6 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     (add-to-list 'flycheck-checkers 'cfn-lint)
   )
 
-
-;; Custom Theme
-(add-to-list 'custom-theme-load-path "~/.emacs.d/vendor/atom-one-dark-theme/")
-
-;; (use-package spaceline-all-the-icons
-;;   :after spaceline
-;;   :config (spaceline-all-the-icons-theme))
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -727,6 +718,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(custom-enabled-themes (quote (doom-nord-light)))
  '(custom-safe-themes t)
  '(deft-auto-save-interval 0.0)
+ '(eshell-history-file-name "/Users/mranallo/.emacs.d/eshell/history")
  '(exec-path-from-shell-arguments (quote ("-l")))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#d9d9d9")
@@ -752,6 +744,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
      ("#F2804F" . 70)
      ("#F771AC" . 85)
      ("#F2F2F2" . 100))))
+ '(history-delete-duplicates t)
  '(hl-bg-colors
    (quote
     ("#DEB542" "#F2804F" "#FF6E64" "#F771AC" "#9EA0E5" "#69B7F0" "#69CABF" "#B4C342")))
@@ -790,7 +783,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pdf-view-midnight-colors (quote ("#655370" . "#fbf8ef")))
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
