@@ -133,6 +133,9 @@
 ; apply syntax highlighting to all buffers
 (global-font-lock-mode t)
 
+; intelligently clean up whitespace
+(global-whitespace-cleanup-mode t)
+
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
 ; don't display startup message
@@ -246,7 +249,6 @@
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 
 ;; Duplicate line
-;; (global-set-key (kbd "M-d") 'defunkt-duplicate-line)
 (global-set-key (kbd "M-d") 'duplicate-current-line-or-region)
 
 ;; Newline and indent
@@ -363,9 +365,13 @@
 ;; eshell toggle
 (global-set-key (kbd "s-`") 'eshell-toggle)
 
-(load-file "~/.emacs.d/vendor/esh-custom/esh-custom.elc")
+;; (load-file "~/.emacs.d/vendor/esh-custom/esh-custom.elc")
 ;; Enable the new eshell prompt
-(setq eshell-prompt-function 'esh-prompt-func)
+;; (setq eshell-prompt-function 'esh-prompt-func)
+(with-eval-after-load "esh-opt"
+  (autoload 'epe-theme-lambda "eshell-prompt-extras")
+  (setq eshell-highlight-prompt nil
+        eshell-prompt-function 'epe-theme-lambda))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -700,7 +706,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
-   ["#D8DEE9" "red3" "green3" "yellow3" "DeepSkyBlue2" "magenta3" "cyan3" "gray90"])
+   ["#D8DEE9" "#99324B" "#4F894C" "#9A7500" "#3B6EA8" "#97365B" "#398EAC" "#3B4252"])
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
@@ -721,7 +727,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(eshell-history-file-name "/Users/mranallo/.emacs.d/eshell/history")
  '(exec-path-from-shell-arguments (quote ("-l")))
  '(fci-rule-character-color "#d9d9d9")
- '(fci-rule-color "#d9d9d9")
+ '(fci-rule-color "#AEBACF")
  '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
  '(foreground-color "#52676f")
  '(frame-background-mode (quote dark))
@@ -783,8 +789,8 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
- '(pdf-view-midnight-colors (quote ("#655370" . "#fbf8ef")))
+    (counsel-tramp tramp friendly-tramp-path whitespace-cleanup-mode counsel-dash ivy-emoji eshell-prompt-extras emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+ '(pdf-view-midnight-colors (cons "#3B4252" "#E5E9F0"))
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
  '(rm-blacklist
@@ -821,28 +827,28 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(term-default-bg-color "#fdf6e3")
  '(term-default-fg-color "#657b83")
  '(tool-bar-mode nil)
- '(vc-annotate-background "#d4d4d4")
+ '(vc-annotate-background "#E5E9F0")
  '(vc-annotate-color-map
-   (quote
-    ((20 . "#437c7c")
-     (40 . "#336c6c")
-     (60 . "#205070")
-     (80 . "#2f4070")
-     (100 . "#1f3060")
-     (120 . "#0f2050")
-     (140 . "#a080a0")
-     (160 . "#806080")
-     (180 . "#704d70")
-     (200 . "#603a60")
-     (220 . "#502750")
-     (240 . "#401440")
-     (260 . "#6c1f1c")
-     (280 . "#935f5c")
-     (300 . "#834744")
-     (320 . "#732f2c")
-     (340 . "#6b400c")
-     (360 . "#23733c"))))
- '(vc-annotate-very-old-color "#23733c")
+   (list
+    (cons 20 "#4F894C")
+    (cons 40 "#688232")
+    (cons 60 "#817b19")
+    (cons 80 "#9A7500")
+    (cons 100 "#a0640c")
+    (cons 120 "#a65419")
+    (cons 140 "#AC4426")
+    (cons 160 "#a53f37")
+    (cons 180 "#9e3a49")
+    (cons 200 "#97365B")
+    (cons 220 "#973455")
+    (cons 240 "#983350")
+    (cons 260 "#99324B")
+    (cons 280 "#a0566f")
+    (cons 300 "#a87b93")
+    (cons 320 "#b0a0b6")
+    (cons 340 "#AEBACF")
+    (cons 360 "#AEBACF")))
+ '(vc-annotate-very-old-color nil)
  '(weechat-color-list
    (quote
     (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
