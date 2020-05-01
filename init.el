@@ -136,6 +136,18 @@
 ; intelligently clean up whitespace
 (global-whitespace-cleanup-mode t)
 
+;;;;;;;;;;;;;;;;;;;; Terminal preferences ;;;;;;;;;;;;;;;;;
+
+(defun is-in-terminal()
+    (not (display-graphic-p)))
+
+(defmacro when-term (&rest body)
+  "Works just like `progn' but will only evaluate expressions in VAR when Emacs is running in a terminal else just nil."
+  `(when (is-in-terminal) ,@body))
+
+(when-term
+ (xterm-mouse-mode 1))
+
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
 ; don't display startup message

@@ -5,6 +5,7 @@
 
 (depends-on "ace-jump-buffer")
 (depends-on "ace-jump-mode")
+(depends-on "ace-window")
 (depends-on "ag")
 (depends-on "all-the-icons")
 (depends-on "all-the-icons-dired")
@@ -101,6 +102,7 @@
 (depends-on "names")
 (depends-on "neotree")
 (depends-on "nginx-mode")
+(depends-on "nord-theme")
 (depends-on "package-build")
 (depends-on "pallet")
 (depends-on "pcache")
