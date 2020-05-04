@@ -111,7 +111,7 @@
 ;; (setq show-trailing-whitespace t)
 ;; (add-hook 'before-save-hook 'whitespace-cleanup)
 
-;; line numbering
+
 ;; (global-display-line-numbers-mode 1)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
@@ -145,8 +145,12 @@
   "Works just like `progn' but will only evaluate expressions in VAR when Emacs is running in a terminal else just nil."
   `(when (is-in-terminal) ,@body))
 
+;; ITERM2 MOUSE SUPPORT
 (when-term
- (xterm-mouse-mode 1))
+ (require 'mouse)
+ (xterm-mouse-mode t)
+ (defun track-mouse (e))
+ (setq mouse-sel-mode t))
 
 ;;;;;;;;;;;;;;;;;;;; UI Preferences ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -253,6 +257,9 @@
 (global-set-key (kbd "s-/") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Calendar")))
+(global-set-key (kbd "C-c x") `kill-region)
+(global-set-key (kbd "C-c c") `kill-ring-save)
+(global-set-key (kbd "C-c v") `yank)
 
 ;; Duplicate line
 (global-set-key (kbd "M-d") 'duplicate-current-line-or-region)
@@ -339,10 +346,10 @@
 ;; Setting the correct $PATH
 (setenv "PATH"
   (concat
-   "/Users/mranallo/Code/gocode/bin" ":"
+   "~/Code/gocode/bin" ":"
    "/usr/local/opt/go/libexec/bin" ":"
    "/usr/local/bin" ":"
-   "/Users/mranallo/.rbenv/shims" ":"
+   "~/.rbenv/shims" ":"
    (getenv "PATH")
   )
   )
@@ -449,8 +456,8 @@
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-disabled-checkers '(chef-foodcritic ruby-rubocop))
-(setq flycheck-ruby-rubocop-executable "/Users/mranallo/.rbenv/shims/rubocop")
-(setq flycheck-ruby-executable "/Users/mranallo/.rbenv/shims/ruby")
+(setq flycheck-ruby-rubocop-executable "~/.rbenv/shims/rubocop")
+(setq flycheck-ruby-executable "~/.rbenv/shims/ruby")
 
 ;; disable json-jsonlist checking for json files
 (setq-default flycheck-disabled-checkers
@@ -721,7 +728,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(custom-enabled-themes (quote (nord)))
  '(custom-safe-themes t)
  '(deft-auto-save-interval 0.0)
- '(eshell-history-file-name "/Users/mranallo/.emacs.d/eshell/history")
+ '(eshell-history-file-name "~/.emacs.d/eshell/history")
  '(exec-path-from-shell-arguments (quote ("-l")))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#AEBACF")
