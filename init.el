@@ -159,6 +159,9 @@
 ; no toolbar
 (tool-bar-mode -1)
 
+; no menu-bar-mode
+(menu-bar-mode -1)
+
 ;; nice scrolling
 (setq scroll-margin 0
       scroll-conservatively 100000
