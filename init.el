@@ -26,7 +26,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;; Cask ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'cask "/usr/local/share/emacs/site-lisp/cask/cask.el")
+(require 'cask "~/.cask/cask.el")
 (cask-initialize)
 (require 'pallet)
 (pallet-mode t)
@@ -136,7 +136,7 @@
 ; intelligently clean up whitespace
 (global-whitespace-cleanup-mode t)
 
-;;;;;;;;;;;;;;;;;;;; Terminal preferences ;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;; Terminal Emacs preferences ;;;;;;;;;;;;;;;;;
 
 (defun is-in-terminal()
     (not (display-graphic-p)))
@@ -196,14 +196,8 @@
 ; Make yes-or-no questions answerable with 'y' or 'n'
 (fset 'yes-or-no-p 'y-or-n-p)
 
-; To be able to M-x without meta - yes, this overwrites exiting but
-; I don't care because I quit Apple style with s-q
-(global-set-key (kbd "C-x C-c") 'execute-extended-command)
-(global-set-key (kbd "C-x c") 'execute-extended-command)
-(global-set-key (kbd "C-x m") 'execute-extended-command)
-
 ;; (setq ag-highlight-search t)
-(global-set-key (kbd "s-F") 'counsel-projectile-ag)
+(global-set-key (kbd "M-F") 'counsel-projectile-ag)
 
 ;; goto line
 (global-set-key (kbd "C-l") 'goto-line)
@@ -257,9 +251,6 @@
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region-or-line)
 (global-set-key (kbd "C-x n") (lambda() (interactive) (find-file "/Users/mranallo/Library/Mobile Documents/iCloud~co~noteplan~NotePlan/Documents/Calendar")))
 
-;; If you want to be able to M-x without meta
-(global-set-key (kbd "C-x C-m") 'execute-extended-command)
-
 ;; Duplicate line
 (global-set-key (kbd "M-d") 'duplicate-current-line-or-region)
 
@@ -270,8 +261,10 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; Undo and Redo
-(global-set-key (kbd "s-z") 'undo-tree-undo)
-(global-set-key (kbd "s-Z") 'undo-tree-redo)
+(global-undo-fu-session-mode)
+
+(global-set-key (kbd "M-z") 'undo-fu-only-undo)
+(global-set-key (kbd "M-Z") 'undo-fu-only-redo)
 
 ;; Move line up and down
 (global-set-key (kbd "<C-S-down>") 'move-line-down)
@@ -305,11 +298,9 @@
 ;;(define-key dired-mode-map [f2] 'dired-efap)
 ;;(define-key dired-mode-map [down-mouse-1] 'dired-efap-click)
 
-
 (key-chord-define-global "jj" 'avy-goto-word-0)
 (key-chord-define-global "jl" 'avy-goto-line)
 (key-chord-define-global "jk" 'avy-goto-char)
-(key-chord-define-global "uu" 'undo-tree-visualize)
 (key-chord-define-global "xx" 'execute-extended-command)
 (key-chord-define-global "yy" 'counsel-yank-pop)
 (key-chord-define-global "bb" 'counsel-switch-buffer)
@@ -409,8 +400,9 @@
 (setq magit-last-seen-setup-instructions "1.4.0")
 
 ;; Ivy config
-(all-the-icons-ivy-rich-mode 1)
-(ivy-rich-mode 1)
+(if (display-graphic-p)
+    (all-the-icons-ivy-rich-mode 1)
+    (ivy-rich-mode 1))
 (define-key ivy-minibuffer-map (kbd "<return>") #'ivy-alt-done)
 
 
@@ -427,13 +419,6 @@
 
 ;; Haml because they make me
 (require 'haml-mode)
-
-;; Undo Tree
-(require 'undo-tree)
-(global-undo-tree-mode)
-
-;; pianobar
-(autoload 'pianobar "pianobar" nil t)
 
 ;; Winner mode
 (winner-mode 1)
@@ -571,9 +556,6 @@
     (push '("*Shell Command Output*"
             :dedicated t :position bottom :stick t :noselect nil :height 0.2)
           popwin:special-display-config)
-    (push '(" *undo-tree*"
-            :dedicated t :position bottom :stick t :noselect nil :height 0.2)
-          popwin:special-display-config)
     (push '("*Warnings*"
             :dedicated t :position bottom :stick t :noselect nil :height 0.2)
           popwin:special-display-config)
@@ -584,7 +566,7 @@
 (global-set-key (kbd "C-z") popwin:keymap)
 
 ;; Neotree
-(global-set-key (kbd "s-\\") 'neotree-project-dir)
+(global-set-key (kbd "M-\\") 'neotree-project-dir)
 (doom-themes-neotree-config)
 
 (defun neotree-project-dir ()
@@ -718,7 +700,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
-   ["#D8DEE9" "#99324B" "#4F894C" "#9A7500" "#3B6EA8" "#97365B" "#398EAC" "#3B4252"])
+   ["unspecified-bg" "#99324B" "#4F894C" "#9A7500" "#3B6EA8" "#97365B" "#398EAC" "#3B4252"])
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
@@ -733,7 +715,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(cua-read-only-cursor-color "#859900")
  '(cursor-color "#52676f")
  '(cursor-type (quote box))
- '(custom-enabled-themes (quote (doom-nord-light)))
+ '(custom-enabled-themes (quote (nord)))
  '(custom-safe-themes t)
  '(deft-auto-save-interval 0.0)
  '(eshell-history-file-name "/Users/mranallo/.emacs.d/eshell/history")
@@ -787,6 +769,9 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
      ("FIXME" . "#dc752f")
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f"))))
+ '(jdee-db-active-breakpoint-face-colors (cons "#191C25" "#81A1C1"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#191C25" "#A3BE8C"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#191C25" "#434C5E"))
  '(json-reformat:indent-width 2)
  '(magit-diff-use-overlays nil)
  '(magit-use-overlays nil)
@@ -799,15 +784,18 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(objed-cursor-color "#BF616A")
  '(package-selected-packages
    (quote
-    (counsel-tramp tramp friendly-tramp-path whitespace-cleanup-mode counsel-dash ivy-emoji eshell-prompt-extras emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode undo-tree twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (undo-fu undo-fu-session ace-window nord-theme counsel-tramp tramp friendly-tramp-path whitespace-cleanup-mode counsel-dash ivy-emoji eshell-prompt-extras emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pdf-view-midnight-colors (cons "#3B4252" "#E5E9F0"))
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
  '(rm-blacklist
    (quote
     (" hl-p" " mate" " MRev" " Undo-Tree" " GitGutter" " Helm" " Smrt")))
+ '(rustic-ansi-faces
+   ["#2E3440" "#BF616A" "#A3BE8C" "#EBCB8B" "#81A1C1" "#B48EAD" "#88C0D0" "#ECEFF4"])
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
  '(spaceline-all-the-icons-clock-always-visible nil)
  '(spaceline-all-the-icons-eyebrowse-display-name t)
@@ -838,6 +826,14 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
  '(term-default-bg-color "#fdf6e3")
  '(term-default-fg-color "#657b83")
+ '(tetris-x-colors
+   [[229 192 123]
+    [97 175 239]
+    [209 154 102]
+    [224 108 117]
+    [152 195 121]
+    [198 120 221]
+    [86 182 194]])
  '(tool-bar-mode nil)
  '(vc-annotate-background "#E5E9F0")
  '(vc-annotate-color-map

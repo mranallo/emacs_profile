@@ -24,3 +24,5 @@ abbrev_defs
 forge-database.sqlite
 transient/history.el
 /smex-items
+/undo-fu-session/
+/url/*
