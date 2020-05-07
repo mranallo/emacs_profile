@@ -166,6 +166,9 @@
 ; no menu-bar-mode
 (menu-bar-mode -1)
 
+;; Icons?
+(add-to-list 'load-path "~/.local/share/icons-in-terminal/")
+
 ;; nice scrolling
 (setq scroll-margin 0
       scroll-conservatively 100000
@@ -413,8 +416,11 @@
 (if (display-graphic-p)
     (all-the-icons-ivy-rich-mode 1)
     (ivy-rich-mode 1))
-(define-key ivy-minibuffer-map (kbd "<return>") #'ivy-alt-done)
-
+;; Use C-j for immediate termination with the current value, and RET
+;; for continuing completion for that directory. This is the ido
+;; behaviour.
+(define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
+(define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
 
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x m") 'counsel-M-x)
@@ -797,7 +803,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(objed-cursor-color "#BF616A")
  '(package-selected-packages
    (quote
-    (undo-fu undo-fu-session ace-window nord-theme counsel-tramp tramp friendly-tramp-path whitespace-cleanup-mode counsel-dash ivy-emoji eshell-prompt-extras emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (docker-compose-mode undo-fu undo-fu-session ace-window nord-theme counsel-tramp tramp friendly-tramp-path whitespace-cleanup-mode counsel-dash ivy-emoji eshell-prompt-extras emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pdf-view-midnight-colors (cons "#3B4252" "#E5E9F0"))
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")

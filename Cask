@@ -42,6 +42,7 @@
 (depends-on "dired-hacks-utils")
 (depends-on "dired-sidebar")
 (depends-on "dired-subtree")
+(depends-on "docker-compose-mode")
 (depends-on "dockerfile-mode")
 (depends-on "doom-modeline")
 (depends-on "doom-themes")
