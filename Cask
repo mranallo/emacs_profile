@@ -146,6 +146,8 @@
 (depends-on "unicode-escape")
 (depends-on "unicode-fonts")
 (depends-on "use-package")
+(depends-on "vterm")
+(depends-on "vterm-toggle")
 (depends-on "web-completion-data")
 (depends-on "web-mode")
 (depends-on "which-key")

@@ -157,9 +157,6 @@
 ; don't display startup message
 (setq inhibit-startup-message t)
 
-; no scrollbar
-(scroll-bar-mode -1)
-
 ; no toolbar
 (tool-bar-mode -1)
 
@@ -296,9 +293,14 @@
 (global-set-key (kbd "C-.") 'set-rectangular-region-anchor)
 (global-set-key (kbd "s-<mouse-1>") 'mc/add-cursor-on-click)
 
-;; Sane Term
-(global-set-key (kbd "C-x t") 'sane-term)
-(global-set-key (kbd "C-x T") 'sane-term-create)
+;; Meta X 
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x m") 'counsel-M-x)
+(global-set-key (kbd "C-x C-m") 'counsel-M-x)
+(global-set-key (kbd "M-X") 'counsel-M-x)
+
+;; vterm
+(global-set-key (kbd "C-x t") 'vterm)
 
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
@@ -320,7 +322,7 @@
 (key-chord-define-global "rr" 'counsel-buffer-or-recentf)
 (key-chord-define-global "ww" 'ace-window)
 (key-chord-define-global "dd" 'dumb-jump-go)
-(key-chord-define-global "``" 'eshell-toggle)
+(key-chord-define-global "``" 'vterm-toggle)
 
 (key-chord-mode +1)
 
@@ -390,6 +392,17 @@
         eshell-prompt-function 'epe-theme-lambda))
 
 
+(setq vterm-toggle-fullscreen-p nil)
+(add-to-list 'display-buffer-alist
+             '((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
+                (display-buffer-reuse-window display-buffer-at-bottom)
+                ;;(display-buffer-reuse-window display-buffer-in-direction)
+                ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                ;;(direction . bottom)
+                ;;(dedicated . t) ;dedicated is supported in emacs27
+                (reusable-frames . visible)
+                (window-height . 0.3)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -422,10 +435,6 @@
 (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-immediate-done)
 (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
 
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x m") 'counsel-M-x)
-(global-set-key (kbd "C-x C-m") 'counsel-M-x)
-(global-set-key (kbd "M-X") 'counsel-M-x)
 
 ; search with ag
 (setq counsel-ag-base-command "ag --nocolor --nogroup --ignore-case")
@@ -716,7 +725,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
-   ["unspecified-bg" "#99324B" "#4F894C" "#9A7500" "#3B6EA8" "#97365B" "#398EAC" "#3B4252"])
+   ["#ffffffffffff" "#99324B" "#4F894C" "#9A7500" "#3B6EA8" "#97365B" "#398EAC" "#3B4252"])
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
  '(background-color "#fcf4dc")
@@ -735,6 +744,10 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(custom-safe-themes t)
  '(deft-auto-save-interval 0.0)
  '(eshell-history-file-name "~/.emacs.d/eshell/history")
+ '(evil-emacs-state-cursor (quote ("#D50000" hbar)))
+ '(evil-insert-state-cursor (quote ("#D50000" bar)))
+ '(evil-normal-state-cursor (quote ("#F57F17" box)))
+ '(evil-visual-state-cursor (quote ("#66BB6A" box)))
  '(exec-path-from-shell-arguments (quote ("-l")))
  '(fci-rule-character-color "#d9d9d9")
  '(fci-rule-color "#AEBACF")
@@ -744,6 +757,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(fringe-mode 4 nil (fringe))
  '(global-centered-cursor-mode t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-indent-guides-auto-enabled nil)
  '(highlight-symbol-colors
    (--map
     (solarized-color-blend it "#fdf6e3" 0.25)
@@ -803,8 +817,10 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(objed-cursor-color "#BF616A")
  '(package-selected-packages
    (quote
-    (docker-compose-mode undo-fu undo-fu-session ace-window nord-theme counsel-tramp tramp friendly-tramp-path whitespace-cleanup-mode counsel-dash ivy-emoji eshell-prompt-extras emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
+    (vterm-toggle vterm base16-theme apropospriate-theme undo-fu undo-fu-session ace-window nord-theme counsel-tramp tramp friendly-tramp-path whitespace-cleanup-mode counsel-dash ivy-emoji eshell-prompt-extras emojify company-shell crystal-mode textmate eshell-toggle flycheck-pos-tip company-quickhelp hydra dumb-jump smex sane-term counsel-projectile all-the-icons-ivy-rich all-the-icons-ivy ivy-rich counsel company-posframe flycheck-posframe popwin ag sass-mode solaire-mode doom-modeline doom-themes qsimpleq-theme color-theme-sanityinc-solarized atom-one-dark-theme enh-ruby-mode awscli-capf spacemacs-theme company-tabnine js2-mode prettier-js forge company-emoji dired-sidebar deft bury-successful-compilation unicode-fonts flyspell-lazy ess-smart-underscore rbenv presentation magit-popup package-build projectile s spaceline beacon which-key use-package use-package-chords all-the-icons-dired spaceline-all-the-icons go-eldoc company company-go groovy-mode nginx-mode markdown-mode dockerfile-mode color-theme-solarized web-mode twilight-bright-theme twilight-anti-bright-theme smartparens rspec-mode pos-tip pcache pallet multiple-cursors magit lua-mode linum-off key-chord indent-guide ido-better-flex github-browse-file git-gutter-fringe+ free-keys flymake-sass flymake-ruby flymake-go flycheck expand-region es-lib editorconfig dired-efap dired+ company-web centered-cursor-mode browse-kill-ring blank-mode ace-jump-mode ace-jump-buffer)))
  '(pdf-view-midnight-colors (cons "#3B4252" "#E5E9F0"))
+ '(pos-tip-background-color "#ffffffffffff")
+ '(pos-tip-foreground-color "#78909C")
  '(powerline-color1 "#1E1E1E")
  '(powerline-color2 "#111111")
  '(rm-blacklist
@@ -840,6 +856,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
+ '(tabbar-background-color "#ffffffffffff")
  '(term-default-bg-color "#fdf6e3")
  '(term-default-fg-color "#657b83")
  '(tetris-x-colors
@@ -886,6 +903,7 @@ See URL 'https://github.com/awslabs/cfn-python-lint'."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "JetBrains Mono" :foundry "nil" :slant normal :weight thin :height 130 :width normal))))
+ '(custom-comment ((t (:foreground "brightblue"))))
  '(helm-header ((t (:inherit header-line))))
  '(helm-source-header ((t (:background "gray66" :foreground "black" :weight bold :height 1.0))))
  '(spaceline-all-the-icons-sunrise-face ((t (:inherit powerline-active2 :foreground "#f6c175"))))
