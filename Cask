@@ -126,6 +126,7 @@
 (depends-on "sass-mode")
 (depends-on "shrink-path")
 (depends-on "shut-up")
+(depends-on "simpleclip")
 (depends-on "smart-tab")
 (depends-on "smartparens")
 (depends-on "smex")
