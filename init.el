@@ -582,7 +582,7 @@
 (global-set-key (kbd "C-z") popwin:keymap)
 
 ;; Neotree
-(global-set-key (kbd "M-\\") 'neotree-project-dir)
+(global-set-key (kbd "C-x t") 'neotree-project-dir)
 (doom-themes-neotree-config)
 
 (defun neotree-project-dir ()
